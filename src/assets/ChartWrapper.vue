@@ -42,6 +42,8 @@ import lineChart from './LineChart'
 import barChart from './BarChart'
 import json from './timeseries.json'
 
+var chartTypes = ['Bar', 'Line']
+
 export default {
     components: {
         lineChart,
@@ -49,7 +51,7 @@ export default {
     },
     props: {
         country: String,
-        chartType: String,
+        chartTypeId: Number,
         dataType: Number
     },
     filters: {
@@ -87,11 +89,13 @@ export default {
             worldKey: 'World',
             summary: {},
             countries: [],
+            chartType: '',
             dataTypeWr: null
         }
     },
     mounted() {
         this.dataTypeWr = this.dataType;
+        this.chartType = chartTypes[this.chartTypeId];
         this.getRawData();
         this.getFitData();
         this.getCountries();
@@ -199,6 +203,9 @@ export default {
         dataType() {
             this.dataTypeWr = this.dataType;
             this.fillData();
+        },
+        chartTypeId() {
+            this.chartType = chartTypes[this.chartTypeId];
         }
     }
 }

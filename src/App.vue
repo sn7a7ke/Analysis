@@ -4,12 +4,12 @@
         <div class="wrapper mx-3">
             <chart-wrapper 
                 :country="'World'"
-                :chartType="chartType"
+                :chartTypeId="chartTypeId"
                 :dataType="dataType % 3">
             </chart-wrapper>
             <chart-wrapper 
                 :country="country"
-                :chartType="chartType"
+                :chartTypeId="chartTypeId"
                 :dataType="dataType % 3">
             </chart-wrapper>
             <button class="btn btn-primary m-2"
@@ -23,8 +23,6 @@
 </template>
 
 <script>
-    var chartTypes = ['Bar', 'Line']
-
     import ChartWrapper from './assets/ChartWrapper'
 
     export default {
@@ -36,14 +34,13 @@
                 msg: 'Charts App',
                 country: 'US',
                 chartTypeId: 0,
-                chartType: chartTypes[0],
                 dataType: 0
             }
         },
         methods: {
             toggleChartType() {
                 this.chartTypeId++;
-                this.chartType = chartTypes[this.chartTypeId % chartTypes.length];
+                this.chartTypeId = this.chartTypeId % 2;
             },
             toggleDataType() {
                 this.dataType++;
