@@ -23,42 +23,42 @@
 </template>
 
 <script>
-    import ChartWrapper from './assets/ChartWrapper'
+import ChartWrapper from './assets/ChartWrapper'
 
-    export default {
-        components: {
-            ChartWrapper
-        },
-        data() {
-            return {
-                msg: 'Charts App',
-                country: 'US',
-                chartTypeId: 0,
-                dataType: 0
-            }
-        },
-        methods: {
-            toggleChartType() {
-                this.chartTypeId++;
-                this.chartTypeId = this.chartTypeId % 2;
-            },
-            toggleDataType() {
-                this.dataType++;
-            },
-        },
-        computed: {
-        },
-        beforeMount(){
+export default {
+    components: {
+        ChartWrapper
+    },
+    data() {
+        return {
+            msg: 'Charts App',
+            country: 'US',
+            chartTypeId: 0,
+            dataType: 0
         }
+    },
+    methods: {
+        toggleChartType() {
+            this.chartTypeId++;
+            this.chartTypeId = this.chartTypeId % 2;
+        },
+        toggleDataType() {
+            this.dataType++;
+        },
+    },
+    computed: {
+    },
+    beforeMount(){
     }
+}
 </script>
 
 <style scoped>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
 }
 </style>

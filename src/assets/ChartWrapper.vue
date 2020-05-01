@@ -211,13 +211,13 @@ export default {
 }
 </script>
 <style>
-    .chart-wrapper {
-        text-align: left;
-    }
-    .active {
-        background-color: #ddddee;
-    }
-    .pointer:hover {
-        cursor: pointer;
-    }
+.chart-wrapper {
+    text-align: left;
+}
+.active {
+    background-color: #ddddee;
+}
+.pointer:hover {
+    cursor: pointer;
+}
 </style>
