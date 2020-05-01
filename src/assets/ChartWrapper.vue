@@ -1,16 +1,22 @@
 <template>
     <div class="chart-wrapper border border-info rounded m-2" v-if="isReady">
         <div class="m-1">
-            <select class="d-inline font-weight-bold col-4" v-model="verifiedCountry" @change="countryChanged">
+            <select class="d-inline font-weight-bold col-2" v-model="verifiedCountry" @change="countryChanged">
                 <option v-for="(option, index) in countries" :key="index"
                     v-bind:value="option" >
                     {{ option }}
                 </option>
             </select>
-            <h6 class="d-inline col-8">
-                Coronavirus Cases: <b>{{summary.confirmed | numeric}}</b> 
-                Deaths: <b>{{summary.deaths | numeric}}</b> 
-                Recovered: <b>{{summary.recovered | numeric}}</b>
+            <h6 class="d-inline col-10">
+                <h6 class="d-inline pointer" :class="{ active: dataType == 0 }" @click="dataType = 0">
+                    Coronavirus Cases: <b>{{summary.confirmed | numeric}}</b>
+                </h6>
+                <h6 class="d-inline pointer" :class="{ active: dataType == 1 }" @click="dataType = 1">
+                    Deaths: <b>{{summary.deaths | numeric}}</b>
+                </h6>
+                <h6 class="d-inline pointer" :class="{ active: dataType == 2 }" @click="dataType = 2">
+                    Recovered: <b>{{summary.recovered | numeric}}</b>
+                </h6>
             </h6>
         </div>
         <div class="m-1">
@@ -137,7 +143,7 @@ export default {
                 recovered: di2.recovered - di1.recovered
             };
         },
-        fillData () {
+        fillData() {
             this.datacollection = 
             {
                 labels: this.fitData[this.verifiedCountry].map(d => d.date),
@@ -187,10 +193,21 @@ export default {
     },
     computed: {
     },
+    watch: {
+        dataType() {
+            this.fillData();
+        }
+    }
 }
 </script>
 <style>
     .chart-wrapper {
         text-align: left;
+    }
+    .active {
+        background-color: #ddddee;
+    }
+    .pointer:hover {
+        cursor: pointer;
     }
 </style>
