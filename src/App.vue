@@ -16,7 +16,7 @@
                 @click="toggleChartType">Toggle chart type
             </button>
             <button class="btn btn-primary m-2"
-                @click="toggleDataType">Toggle data type
+                @click="toggleDataType">Cases/Deaths/Recovered
             </button>
         </div>
     </div>

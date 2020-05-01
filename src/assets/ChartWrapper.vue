@@ -8,13 +8,13 @@
                 </option>
             </select>
             <h6 class="d-inline col-10">
-                <h6 class="d-inline pointer" :class="{ active: dataType == 0 }" @click="dataType = 0">
+                <h6 class="d-inline pointer" :class="{ active: dataTypeWr == 0 }" @click="dataTypeWr = 0">
                     Coronavirus Cases: <b>{{summary.confirmed | numeric}}</b>
                 </h6>
-                <h6 class="d-inline pointer" :class="{ active: dataType == 1 }" @click="dataType = 1">
+                <h6 class="d-inline pointer" :class="{ active: dataTypeWr == 1 }" @click="dataTypeWr = 1">
                     Deaths: <b>{{summary.deaths | numeric}}</b>
                 </h6>
-                <h6 class="d-inline pointer" :class="{ active: dataType == 2 }" @click="dataType = 2">
+                <h6 class="d-inline pointer" :class="{ active: dataTypeWr == 2 }" @click="dataTypeWr = 2">
                     Recovered: <b>{{summary.recovered | numeric}}</b>
                 </h6>
             </h6>
@@ -87,12 +87,13 @@ export default {
             worldKey: 'World',
             summary: {},
             countries: [],
+            dataTypeWr: null
         }
     },
     mounted() {
+        this.dataTypeWr = this.dataType;
         this.getRawData();
         this.getFitData();
-        this.calculateWorldData();
         this.getCountries();
         this.validateCountry();
         this.getSummary();
@@ -116,6 +117,7 @@ export default {
                 dailyData[key]=country;
             });
             this.fitData = dailyData;
+            this.calculateWorldData();
         },
         calculateWorldData() {
             var tempData = [];
@@ -156,10 +158,10 @@ export default {
             this.isReady = true;
         },
         getDataType(d) {
-            if (this.dataType == 1) {
+            if (this.dataTypeWr == 1) {
                 return d.deaths;
             }
-            if (this.dataType == 2) {
+            if (this.dataTypeWr == 2) {
                 return d.recovered;
             }
             return d.confirmed;
@@ -195,6 +197,7 @@ export default {
     },
     watch: {
         dataType() {
+            this.dataTypeWr = this.dataType;
             this.fillData();
         }
     }
