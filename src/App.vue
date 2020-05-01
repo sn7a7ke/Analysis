@@ -1,7 +1,12 @@
 <template>
     <div>
-        <h3 class="d-flex justify-content-center mt-1">{{ msg }}</h3>
-        <div class="wrapper">
+        <!-- <h3 class="d-flex justify-content-center mt-1">{{ msg }}</h3> -->
+        <div class="wrapper mx-3">
+            <chart-wrapper 
+                :country="'World'"
+                :chartType="chartType"
+                :dataType="dataType % 3">
+            </chart-wrapper>
             <chart-wrapper 
                 :country="country"
                 :chartType="chartType"
@@ -29,7 +34,7 @@
         data() {
             return {
                 msg: 'Charts App',
-                country: 'hdghdghg',
+                country: 'US',
                 chartTypeId: 0,
                 chartType: chartTypes[0],
                 dataType: 0
