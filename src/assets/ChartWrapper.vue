@@ -1,19 +1,28 @@
 <template>
     <div class="chart-wrapper border border-info rounded m-2" v-if="isReady">
-        <h3 class="m-1">{{verifiedCountry}}</h3>
-        <h5>Coronavirus Cases: {{summary.confirmed | numeric}} Deaths: {{summary.deaths | numeric}} Recovered: {{summary.recovered | numeric}}</h5>
+        <div class="m-1">
+            <select class="d-inline font-weight-bold col-4" v-model="verifiedCountry" @change="countryChanged">
+                <option v-for="(option, index) in countries" :key="index"
+                    v-bind:value="option" >
+                    {{ option }}
+                </option>
+            </select>
+            <h6 class="d-inline col-8">
+                Coronavirus Cases: <b>{{summary.confirmed | numeric}}</b> 
+                Deaths: <b>{{summary.deaths | numeric}}</b> 
+                Recovered: <b>{{summary.recovered | numeric}}</b>
+            </h6>
+        </div>
         <div class="m-1">
             <line-chart
                 v-if="chartType=='Line'"
                 :chart-data="datacollection"
-                :options="options"
-                :refresh="refresh">
+                :options="options">
             </line-chart>
             <bar-chart
                 v-if="chartType=='Bar'"
                 :chart-data="datacollection"
-                :options="options"
-                :refresh="refresh">
+                :options="options">
             </bar-chart>
         </div>
     </div>
@@ -48,16 +57,11 @@ export default {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                // title: {
-                //     display: true,
-                //     text: 'Custom Chart Title'
-                // },
                 scales: {
                     xAxes: [{
                         ticks: {
                             maxRotation: 90,
                             minRotation: 90
-                            // min: 'March'
                         }
                     }],
                     yAxes: [{
@@ -70,26 +74,21 @@ export default {
                     display: false,
                 }
             },
-            rawData: null,
+            rawData: [],
             fitData: [],
-            //worldData: [],
             isReady: false,
             verifiedCountry: '',
             worldKey: 'World',
-            summary: {
-                date: '',
-                confirmed: 0,
-                deaths: 0,
-                recovered: 0
-            },
-            refresh: 0
+            summary: {},
+            countries: [],
         }
     },
     mounted() {
-        this.validateCountry();
         this.getRawData();
-        this.calculateData();
+        this.getFitData();
         this.calculateWorldData();
+        this.getCountries();
+        this.validateCountry();
         this.getSummary();
         this.fillData();
     },
@@ -100,12 +99,10 @@ export default {
         getRawData() {
             this.rawData = json;
         },
-        calculateData() {
+        getFitData() {
             var dailyData = [];
             Object.keys(this.rawData).forEach( key => {
-                // in-case properties are nested objects
-                // let value = JSON.stringify(rawData[key]);  
-                let dc = this.rawData[key];   // for primitive nested properties
+                let dc = this.rawData[key];
                 var country = [];
                 for (let i = 1; i < dc.length; i++) {
                     country.push(this.diff(dc[i - 1], dc[i]));
@@ -127,27 +124,20 @@ export default {
                 for (let i = 0; i < dc.length; i++) {
                     tempData[i].confirmed += dc[i].confirmed;
                     tempData[i].deaths += dc[i].deaths;
-                    tempData[i].recovered += dc[i].recovered;                    
+                    tempData[i].recovered += dc[i].recovered;
                 }
             });
             this.fitData[this.worldKey] = tempData;
-            //this.worldData = tempData;
         },
         diff(di1, di2) {
             return {
                 date: di2.date,
                 confirmed: di2.confirmed - di1.confirmed,
                 deaths: di2.deaths - di1.deaths,
-                recovered: di2.recovered - di1.recovered                
+                recovered: di2.recovered - di1.recovered
             };
         },
         fillData () {
-            // var country = this.rawData['Ukraine'];
-            // var day = country[95];
-            // var death = day.deaths;
-            // var test1 = this.fitData['Ukraine'].map(d => d.date);
-            // var test2 = this.fitData['Ukraine'].map(d => d.confirmed);
-            // debugger;
             this.datacollection = 
             {
                 labels: this.fitData[this.verifiedCountry].map(d => d.date),
@@ -171,6 +161,9 @@ export default {
         getSummary() {
             let arr = this.fitData[this.verifiedCountry];
             this.summary.date = arr[arr.length-1].date;
+            this.summary.confirmed = 0;
+            this.summary.deaths = 0;
+            this.summary.recovered = 0;
             for (let i = 0; i < arr.length; i++) {
                 this.summary.confirmed += arr[i].confirmed;
                 this.summary.deaths += arr[i].deaths;
@@ -184,17 +177,20 @@ export default {
             else {
                 this.verifiedCountry = this.worldKey;
             }
+        },
+        getCountries() {
+            this.countries = Object.keys(this.fitData).sort();
+        },
+        countryChanged() {
+            this.getSummary();
         }
     },
     computed: {
-        dataTypeCnanged() {
-            fillData();
-        }
     },
 }
 </script>
 <style>
     .chart-wrapper {
-        text-align: center;
+        text-align: left;
     }
 </style>

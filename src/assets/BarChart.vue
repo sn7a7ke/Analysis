@@ -4,7 +4,7 @@ import { Bar, mixins  } from 'vue-chartjs'
 export default {
     extends: Bar,
     mixins: [mixins.reactiveProp],
-    props: ['options'], //, 'refresh'],
+    props: ['options'],
     mounted () {
         this.renderLineChart();
     },
@@ -13,11 +13,5 @@ export default {
             this.renderChart(this.chartData, this.options);
         }
     },
-    // watch: {
-    //     refresh: function() {
-    //         this._chart.destroy();
-    //         this.renderLineChart();
-    //     }
-    // }  
 }
 </script>
