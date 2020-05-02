@@ -86,22 +86,20 @@ export default {
             fitData: [],
             isReady: false,
             verifiedCountry: '',
-            worldKey: 'World',
+            totalKey: 'World',
             summary: {},
             countries: [],
-            chartType: '',
-            dataTypeWr: null
+            dataTypeWr: this.dataType
         }
     },
     mounted() {
-        this.dataTypeWr = this.dataType;
-        this.chartType = chartTypes[this.chartTypeId];
         this.getRawData();
         this.getFitData();
         this.getCountries();
         this.validateCountry();
         this.getSummary();
         this.fillData();
+        this.isReady = true;
     },
     beforeUpdate() {
         this.fillData();
@@ -121,9 +119,9 @@ export default {
                 dailyData[key]=country;
             });
             this.fitData = dailyData;
-            this.calculateWorldData();
+            this.calculateTotal();
         },
-        calculateWorldData() {
+        calculateTotal() {
             var tempData = [];
             let keys = Object.keys(this.fitData);
             let dc = this.fitData[keys[0]];
@@ -139,7 +137,7 @@ export default {
                     tempData[i].recovered += dc[i].recovered;
                 }
             });
-            this.fitData[this.worldKey] = tempData;
+            this.fitData[this.totalKey] = tempData;
         },
         diff(di1, di2) {
             return {
@@ -159,7 +157,6 @@ export default {
                         data: this.fitData[this.verifiedCountry].map(d => this.getDataType(d))
                     }]
             }
-            this.isReady = true;
         },
         getDataType(d) {
             if (this.dataTypeWr == 1) {
@@ -187,7 +184,7 @@ export default {
                 this.verifiedCountry = this.country;
             }
             else {
-                this.verifiedCountry = this.worldKey;
+                this.verifiedCountry = this.totalKey;
             }
         },
         getCountries() {
@@ -198,15 +195,17 @@ export default {
         }
     },
     computed: {
+        chartType() {
+            if (this.chartTypeId<0 || this.chartTypeId>=chartTypes.length)
+                return chartTypes[0];
+            return chartTypes[this.chartTypeId];
+        }
     },
     watch: {
         dataType() {
             this.dataTypeWr = this.dataType;
             this.fillData();
         },
-        chartTypeId() {
-            this.chartType = chartTypes[this.chartTypeId];
-        }
     }
 }
 </script>

@@ -5,12 +5,12 @@
             <chart-wrapper 
                 :country="'World'"
                 :chartTypeId="chartTypeId"
-                :dataType="dataType % 3">
+                :dataType="dataType">
             </chart-wrapper>
             <chart-wrapper 
                 :country="country"
                 :chartTypeId="chartTypeId"
-                :dataType="dataType % 3">
+                :dataType="dataType">
             </chart-wrapper>
             <button class="btn btn-primary m-2"
                 @click="toggleChartType">Toggle chart type
@@ -44,7 +44,8 @@ export default {
         },
         toggleDataType() {
             this.dataType++;
-        },
+            this.dataType = this.dataType % 3;
+       },
     },
     computed: {
     },
