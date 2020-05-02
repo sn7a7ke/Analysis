@@ -13,10 +13,10 @@
                 :dataType="dataType">
             </chart-wrapper>
             <button class="btn btn-primary m-2"
-                @click="toggleChartType">Toggle chart type
+                @click="toggleChartType">Switch to <b>{{nextChartType}}</b>
             </button>
             <button class="btn btn-primary m-2"
-                @click="toggleDataType">Cases/Deaths/Recovered
+                @click="toggleDataType">Switch to <b>{{nextDataType}}</b>
             </button>
         </div>
     </div>
@@ -43,14 +43,26 @@ export default {
     methods: {
         toggleChartType() {
             this.chartTypeId++;
-            this.chartType = chartTypes[this.chartTypeId % chartTypes.length];
+            this.chartType = this.getNextValue(chartTypes, this.chartTypeId);
         },
         toggleDataType() {
             this.dataTypeId++;
-            this.dataType = dataTypes[this.dataTypeId % dataTypes.length];
-       },
+            this.dataType = this.getNextValue(dataTypes, this.dataTypeId);
+        },
+        getNextValue(arr, idx)
+        {
+            return arr[idx % arr.length];
+        },
     },
     computed: {
+        nextChartType()
+        {
+            return this.getNextValue(chartTypes, this.chartTypeId + 1);
+        },
+        nextDataType()
+        {
+            return this.getNextValue(dataTypes, this.dataTypeId + 1);
+        },
     },
     beforeMount(){
     }
