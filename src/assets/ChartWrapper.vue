@@ -90,12 +90,12 @@ export default {
     },
     mounted() {
         this._fieldType = this.fieldType;
-        this.getRawData();
-        this.getDailyData();
-        this.getTotalData();
-        this.getCountries();
-        this.validateCountry();
-        this.getSummary();
+        this.rawData = this.getRawData();
+        this.dailyData = this.getConvertData(this.dailyConvertRow);
+        this.totalData = this.getConvertData(this.totalConvertRow);
+        this.countries = this.getCountries();
+        this.verifiedCountry = this.validateCountry();
+        this.summary = this.getSummary();
         this.fillData();
         this.isReady = true;
     },
@@ -103,33 +103,30 @@ export default {
     },
     methods: {
         getRawData() {
-            this.rawData = json;
+            return json;
         },
-        getDailyData() {
+        getConvertData(сonvertRow) {
             var tempData = [];
             Object.keys(this.rawData).forEach( key => {
                 let dc = this.rawData[key];
-                var country = [];
-                for (let i = 1; i < dc.length; i++) {
-                    country.push(this.diff(dc[i - 1], dc[i]));
-                }
-                tempData[key]=country;
+                tempData[key]=сonvertRow(dc);
             });
-            this.dailyData = tempData;
-            this.calculateTotalField(this.dailyData);
+            this.calculateTotalField(tempData);
+            return tempData;
         },
-        getTotalData() {
-            var tempData = [];
-            Object.keys(this.rawData).forEach( key => {
-                let dc = this.rawData[key];
-                var country = [];
-                for (let i = 0; i < dc.length; i++) {
-                    country.push(dc[i]);
-                }
-                tempData[key]=country;
-            });
-            this.totalData = tempData;
-            this.calculateTotalField(this.totalData);
+        dailyConvertRow(dc) {
+            var tempRow = [];
+            for (let i = 1; i < dc.length; i++) {
+                tempRow.push(this.diff(dc[i - 1], dc[i]));
+            }
+            return tempRow
+        },
+        totalConvertRow(dc) {
+            var tempRow = [];
+            for (let i = 0; i < dc.length; i++) {
+                tempRow.push(dc[i]);
+            }
+            return tempRow
         },
         calculateTotalField(arr) {
             var tempData = [];
@@ -177,27 +174,21 @@ export default {
             return d[this._fieldType];
         },
         getSummary() {
-            let arr = this.dailyData[this.verifiedCountry];
-            this.summaryDate = arr[arr.length-1].date;
-            this.summary.confirmed = 0;
-            this.summary.deaths = 0;
-            this.summary.recovered = 0;
-            for (let i = 0; i < arr.length; i++) {
-                this.summary.confirmed += arr[i].confirmed;
-                this.summary.deaths += arr[i].deaths;
-                this.summary.recovered += arr[i].recovered;
+            let arr = this.totalData[this.verifiedCountry];
+            let le = arr[arr.length-1];
+            return {
+                confirmed: le.confirmed,
+                deaths: le.deaths,
+                recovered: le.recovered
             }
         },
         validateCountry() {
-            if (this.dailyData[this.country] !== undefined) {
-                this.verifiedCountry = this.country;
-            }
-            else {
-                this.verifiedCountry = this.totalKey;
-            }
+            return (this.dailyData[this.country] !== undefined)
+                    ? this.country
+                    : this.totalKey;
         },
         getCountries() {
-            this.countries = Object.keys(this.dailyData).sort();
+            return Object.keys(this.dailyData).sort();
         },
         countryChanged() {
             this.getSummary();

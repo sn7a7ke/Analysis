@@ -43,7 +43,7 @@ export default {
             chartType: chartTypes[0],
             fieldTypeId: 0,
             fieldType: fieldTypes[0],
-            dataTypeId: 1,
+            dataTypeId: 0,
             dataType: dataTypes[0],
         }
     },
