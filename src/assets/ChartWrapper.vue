@@ -7,17 +7,13 @@
                     {{ option }}
                 </option>
             </select>
-            <h6 class="d-inline col-10">
-                <h6 class="d-inline pointer" :class="isFieldType(0)" @click="clickFieldType(0)">
-                    Coronavirus Cases: <b>{{summary.confirmed | numeric}}</b>
+            <div class="d-inline col-10">
+                <h6 v-for="(value, name, index) in summary" :key="index"
+                        class="d-inline pointer" :class="isFieldType(index)" 
+                        @click="clickFieldType(index)">
+                    {{name}}: <b>{{value | numeric}}</b>
                 </h6>
-                <h6 class="d-inline pointer" :class="isFieldType(1)" @click="clickFieldType(1)">
-                    Deaths: <b>{{summary.deaths | numeric}}</b>
-                </h6>
-                <h6 class="d-inline pointer" :class="isFieldType(2)" @click="clickFieldType(2)">
-                    Recovered: <b>{{summary.recovered | numeric}}</b>
-                </h6>
-            </h6>
+            </div>
         </div>
         <div class="m-1">
             <line-chart
@@ -85,6 +81,7 @@ export default {
             _fieldType: '',
             totalKey: 'World',
             summary: {},
+            summaryDate: '',
             countries: [],
         }
     },
@@ -160,7 +157,7 @@ export default {
         },
         getSummary() {
             let arr = this.fitData[this.verifiedCountry];
-            this.summary.date = arr[arr.length-1].date;
+            this.summaryDate = arr[arr.length-1].date;
             this.summary.confirmed = 0;
             this.summary.deaths = 0;
             this.summary.recovered = 0;
