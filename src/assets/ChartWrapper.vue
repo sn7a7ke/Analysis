@@ -8,13 +8,13 @@
                 </option>
             </select>
             <h6 class="d-inline col-10">
-                <h6 class="d-inline pointer" :class="isDataType(0)" @click="clickDataType(0)">
+                <h6 class="d-inline pointer" :class="isFieldType(0)" @click="clickFieldType(0)">
                     Coronavirus Cases: <b>{{summary.confirmed | numeric}}</b>
                 </h6>
-                <h6 class="d-inline pointer" :class="isDataType(1)" @click="clickDataType(1)">
+                <h6 class="d-inline pointer" :class="isFieldType(1)" @click="clickFieldType(1)">
                     Deaths: <b>{{summary.deaths | numeric}}</b>
                 </h6>
-                <h6 class="d-inline pointer" :class="isDataType(2)" @click="clickDataType(2)">
+                <h6 class="d-inline pointer" :class="isFieldType(2)" @click="clickFieldType(2)">
                     Recovered: <b>{{summary.recovered | numeric}}</b>
                 </h6>
             </h6>
@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import {chartTypes, dataTypes} from './Common/Constants.js'
+import {chartTypes, fieldTypes} from './Common/Constants.js'
 import lineChart from './LineChart'
 import barChart from './BarChart'
 import json from './timeseries.json'
@@ -48,7 +48,7 @@ export default {
     props: {
         country: String,
         chartType: String,
-        dataType: String
+        fieldType: String
     },
     filters: {
         numeric: function(value) {
@@ -82,14 +82,14 @@ export default {
             fitData: [],
             isReady: false,
             verifiedCountry: '',
-            _dataType: '',
+            _fieldType: '',
             totalKey: 'World',
             summary: {},
             countries: [],
         }
     },
     mounted() {
-        this._dataType = this.dataType;
+        this._fieldType = this.fieldType;
         this.getRawData();
         this.getFitData();
         this.getCountries();
@@ -151,12 +151,12 @@ export default {
                 datasets: [
                     {
                         backgroundColor: '#888899',
-                        data: this.fitData[this.verifiedCountry].map(d => this.getDataType(d))
+                        data: this.fitData[this.verifiedCountry].map(d => this.getFieldType(d))
                     }]
             }
         },
-        getDataType(d) {
-            return d[this._dataType];
+        getFieldType(d) {
+            return d[this._fieldType];
         },
         getSummary() {
             let arr = this.fitData[this.verifiedCountry];
@@ -184,20 +184,20 @@ export default {
         countryChanged() {
             this.getSummary();
         },
-        clickDataType(i) {
-            this._dataType = dataTypes[i];
+        clickFieldType(i) {
+            this._fieldType = fieldTypes[i];
             this.fillData();
         },
-        isDataType(i) {
-            var expr = dataTypes[i] == this._dataType;
+        isFieldType(i) {
+            var expr = fieldTypes[i] == this._fieldType;
             return {'active': expr};
         },
     },
     computed: {
     },
     watch: {
-        dataType() {
-            this._dataType = this.dataType;
+        fieldType() {
+            this._fieldType = this.fieldType;
             this.fillData();
         },
     }

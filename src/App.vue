@@ -5,25 +5,25 @@
             <chart-wrapper 
                 :country="'World'"
                 :chartType="chartType"
-                :dataType="dataType">
+                :fieldType="fieldType">
             </chart-wrapper>
             <chart-wrapper 
                 :country="country"
                 :chartType="chartType"
-                :dataType="dataType">
+                :fieldType="fieldType">
             </chart-wrapper>
             <button class="btn btn-primary m-2"
                 @click="toggleChartType">Switch to <b>{{nextChartType}}</b>
             </button>
             <button class="btn btn-primary m-2"
-                @click="toggleDataType">Switch to <b>{{nextDataType}}</b>
+                @click="toggleFieldType">Switch to <b>{{nextFieldType}}</b>
             </button>
         </div>
     </div>
 </template>
 
 <script>
-import {chartTypes, dataTypes} from './assets/Common/Constants.js'
+import {chartTypes, fieldTypes} from './assets/Common/Constants.js'
 import ChartWrapper from './assets/ChartWrapper'
 
 export default {
@@ -36,8 +36,8 @@ export default {
             country: 'US',
             chartTypeId: 0,
             chartType: chartTypes[0],
-            dataTypeId: 0,
-            dataType: dataTypes[0]
+            fieldTypeId: 0,
+            fieldType: fieldTypes[0]
         }
     },
     methods: {
@@ -45,9 +45,9 @@ export default {
             this.chartTypeId++;
             this.chartType = this.getNextValue(chartTypes, this.chartTypeId);
         },
-        toggleDataType() {
-            this.dataTypeId++;
-            this.dataType = this.getNextValue(dataTypes, this.dataTypeId);
+        toggleFieldType() {
+            this.fieldTypeId++;
+            this.fieldType = this.getNextValue(fieldTypes, this.fieldTypeId);
         },
         getNextValue(arr, idx)
         {
@@ -59,9 +59,9 @@ export default {
         {
             return this.getNextValue(chartTypes, this.chartTypeId + 1);
         },
-        nextDataType()
+        nextFieldType()
         {
-            return this.getNextValue(dataTypes, this.dataTypeId + 1);
+            return this.getNextValue(fieldTypes, this.fieldTypeId + 1);
         },
     },
     beforeMount(){

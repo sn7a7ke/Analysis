@@ -1,4 +1,4 @@
 // <script>
 export const chartTypes = ['bar', 'line'];
-export const dataTypes = ['confirmed', 'deaths', 'recovered'];
+export const fieldTypes = ['confirmed', 'deaths', 'recovered'];
 // </script>
