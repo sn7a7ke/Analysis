@@ -8,13 +8,13 @@
                 </option>
             </select>
             <h6 class="d-inline col-10">
-                <h6 class="d-inline pointer" :class="{ active: dataTypeWr == 0 }" @click="dataTypeWr = 0">
+                <h6 class="d-inline pointer" :class="isDataType(0)" @click="clickDataType(0)">
                     Coronavirus Cases: <b>{{summary.confirmed | numeric}}</b>
                 </h6>
-                <h6 class="d-inline pointer" :class="{ active: dataTypeWr == 1 }" @click="dataTypeWr = 1">
+                <h6 class="d-inline pointer" :class="isDataType(1)" @click="clickDataType(1)">
                     Deaths: <b>{{summary.deaths | numeric}}</b>
                 </h6>
-                <h6 class="d-inline pointer" :class="{ active: dataTypeWr == 2 }" @click="dataTypeWr = 2">
+                <h6 class="d-inline pointer" :class="isDataType(2)" @click="clickDataType(2)">
                     Recovered: <b>{{summary.recovered | numeric}}</b>
                 </h6>
             </h6>
@@ -33,16 +33,12 @@
         </div>
     </div>
 </template>
-// <script lang="ts">
-//     import DailyInfo from './DailyInfo'
-//     export default DailyInfo
-// </script>
+
 <script>
+import {chartTypes, dataTypes} from './Common/Constants.js'
 import lineChart from './LineChart'
 import barChart from './BarChart'
 import json from './timeseries.json'
-
-var chartTypes = ['Bar', 'Line']
 
 export default {
     components: {
@@ -51,8 +47,8 @@ export default {
     },
     props: {
         country: String,
-        chartTypeId: Number,
-        dataType: Number
+        chartType: String,
+        dataType: String
     },
     filters: {
         numeric: function(value) {
@@ -86,13 +82,14 @@ export default {
             fitData: [],
             isReady: false,
             verifiedCountry: '',
+            _dataType: '',
             totalKey: 'World',
             summary: {},
             countries: [],
-            dataTypeWr: this.dataType
         }
     },
     mounted() {
+        this._dataType = this.dataType;
         this.getRawData();
         this.getFitData();
         this.getCountries();
@@ -159,13 +156,7 @@ export default {
             }
         },
         getDataType(d) {
-            if (this.dataTypeWr == 1) {
-                return d.deaths;
-            }
-            if (this.dataTypeWr == 2) {
-                return d.recovered;
-            }
-            return d.confirmed;
+            return d[this._dataType];
         },
         getSummary() {
             let arr = this.fitData[this.verifiedCountry];
@@ -192,23 +183,27 @@ export default {
         },
         countryChanged() {
             this.getSummary();
-        }
+        },
+        clickDataType(i) {
+            this._dataType = dataTypes[i];
+            this.fillData();
+        },
+        isDataType(i) {
+            var expr = dataTypes[i] == this._dataType;
+            return {'active': expr};
+        },
     },
     computed: {
-        chartType() {
-            if (this.chartTypeId<0 || this.chartTypeId>=chartTypes.length)
-                return chartTypes[0];
-            return chartTypes[this.chartTypeId];
-        }
     },
     watch: {
         dataType() {
-            this.dataTypeWr = this.dataType;
+            this._dataType = this.dataType;
             this.fillData();
         },
     }
 }
 </script>
+
 <style>
 .chart-wrapper {
     text-align: left;
