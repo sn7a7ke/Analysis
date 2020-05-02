@@ -21,12 +21,12 @@
         </div>
         <div class="m-1">
             <line-chart
-                v-if="chartType=='Line'"
+                v-if="chartType=='line'"
                 :chart-data="datacollection"
                 :options="options">
             </line-chart>
             <bar-chart
-                v-if="chartType=='Bar'"
+                v-if="chartType=='bar'"
                 :chart-data="datacollection"
                 :options="options">
             </bar-chart>
