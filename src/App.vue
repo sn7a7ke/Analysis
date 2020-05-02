@@ -5,12 +5,14 @@
             <chart-wrapper 
                 :country="'World'"
                 :chartType="chartType"
-                :fieldType="fieldType">
+                :fieldType="fieldType"
+                :dataType="dataType">
             </chart-wrapper>
             <chart-wrapper 
                 :country="country"
                 :chartType="chartType"
-                :fieldType="fieldType">
+                :fieldType="fieldType"
+                :dataType="dataType">
             </chart-wrapper>
             <button class="btn btn-primary m-2"
                 @click="toggleChartType">Switch to <b>{{nextChartType}}</b>
@@ -18,12 +20,15 @@
             <button class="btn btn-primary m-2"
                 @click="toggleFieldType">Switch to <b>{{nextFieldType}}</b>
             </button>
+            <button class="btn btn-primary m-2"
+                @click="toggleDataType">Switch to <b>{{nextDataType}}</b>
+            </button>
         </div>
     </div>
 </template>
 
 <script>
-import {chartTypes, fieldTypes} from './assets/Common/Constants.js'
+import {chartTypes, fieldTypes, dataTypes} from './assets/Common/Constants.js'
 import ChartWrapper from './assets/ChartWrapper'
 
 export default {
@@ -37,7 +42,9 @@ export default {
             chartTypeId: 0,
             chartType: chartTypes[0],
             fieldTypeId: 0,
-            fieldType: fieldTypes[0]
+            fieldType: fieldTypes[0],
+            dataTypeId: 1,
+            dataType: dataTypes[0],
         }
     },
     methods: {
@@ -48,6 +55,10 @@ export default {
         toggleFieldType() {
             this.fieldTypeId++;
             this.fieldType = this.getNextValue(fieldTypes, this.fieldTypeId);
+        },
+        toggleDataType() {
+            this.dataTypeId++;
+            this.dataType = this.getNextValue(dataTypes, this.dataTypeId);
         },
         getNextValue(arr, idx)
         {
@@ -62,6 +73,10 @@ export default {
         nextFieldType()
         {
             return this.getNextValue(fieldTypes, this.fieldTypeId + 1);
+        },
+        nextDataType()
+        {
+            return this.getNextValue(dataTypes, this.dataTypeId + 1);
         },
     },
     beforeMount(){

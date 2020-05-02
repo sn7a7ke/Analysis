@@ -1,6 +1,6 @@
 <template>
     <div class="chart-wrapper border border-info rounded m-2" v-if="isReady">
-        <div class="m-1">
+        <div class="m-2">
             <select class="d-inline font-weight-bold col-2" v-model="verifiedCountry" @change="countryChanged">
                 <option v-for="(option, index) in countries" :key="index"
                     v-bind:value="option" >
@@ -8,6 +8,7 @@
                 </option>
             </select>
             <div class="d-inline col-10">
+                <h6 class="d-inline pointer">{{dataType.toUpperCase()}}</h6>
                 <h6 v-for="(value, name, index) in summary" :key="index"
                         class="d-inline pointer" :class="isFieldType(index)" 
                         @click="clickFieldType(index)">
@@ -31,7 +32,7 @@
 </template>
 
 <script>
-import {chartTypes, fieldTypes} from './Common/Constants.js'
+import {chartTypes, fieldTypes, dataTypes} from './Common/Constants.js'
 import lineChart from './LineChart'
 import barChart from './BarChart'
 import json from './timeseries.json'
@@ -44,7 +45,8 @@ export default {
     props: {
         country: String,
         chartType: String,
-        fieldType: String
+        fieldType: String,
+        dataType: String,
     },
     filters: {
         numeric: function(value) {
@@ -75,7 +77,8 @@ export default {
                 }
             },
             rawData: [],
-            fitData: [],
+            dailyData: [],
+            totalData: [],
             isReady: false,
             verifiedCountry: '',
             _fieldType: '',
@@ -88,7 +91,8 @@ export default {
     mounted() {
         this._fieldType = this.fieldType;
         this.getRawData();
-        this.getFitData();
+        this.getDailyData();
+        this.getTotalData();
         this.getCountries();
         this.validateCountry();
         this.getSummary();
@@ -96,34 +100,46 @@ export default {
         this.isReady = true;
     },
     beforeUpdate() {
-        this.fillData();
     },
     methods: {
         getRawData() {
             this.rawData = json;
         },
-        getFitData() {
-            var dailyData = [];
+        getDailyData() {
+            var tempData = [];
             Object.keys(this.rawData).forEach( key => {
                 let dc = this.rawData[key];
                 var country = [];
                 for (let i = 1; i < dc.length; i++) {
                     country.push(this.diff(dc[i - 1], dc[i]));
                 }
-                dailyData[key]=country;
+                tempData[key]=country;
             });
-            this.fitData = dailyData;
-            this.calculateTotal();
+            this.dailyData = tempData;
+            this.calculateTotalField(this.dailyData);
         },
-        calculateTotal() {
+        getTotalData() {
             var tempData = [];
-            let keys = Object.keys(this.fitData);
-            let dc = this.fitData[keys[0]];
+            Object.keys(this.rawData).forEach( key => {
+                let dc = this.rawData[key];
+                var country = [];
+                for (let i = 0; i < dc.length; i++) {
+                    country.push(dc[i]);
+                }
+                tempData[key]=country;
+            });
+            this.totalData = tempData;
+            this.calculateTotalField(this.totalData);
+        },
+        calculateTotalField(arr) {
+            var tempData = [];
+            let keys = Object.keys(arr);
+            let dc = arr[keys[0]];
             for (let i = 0; i < dc.length; i++) {
                 tempData.push({date: dc[i].date, confirmed: 0, deaths: 0, recovered: 0});
             }
             keys.forEach( key => {
-                let dc = this.fitData[key];
+                let dc = arr[key];
                 var country = [];
                 for (let i = 0; i < dc.length; i++) {
                     tempData[i].confirmed += dc[i].confirmed;
@@ -131,7 +147,7 @@ export default {
                     tempData[i].recovered += dc[i].recovered;
                 }
             });
-            this.fitData[this.totalKey] = tempData;
+            arr[this.totalKey] = tempData;
         },
         diff(di1, di2) {
             return {
@@ -142,21 +158,26 @@ export default {
             };
         },
         fillData() {
-            this.datacollection = 
-            {
-                labels: this.fitData[this.verifiedCountry].map(d => d.date),
+            this.datacollection = (this.dataType == dataTypes[0])
+                    ? this.selectDate(this.totalData)
+                    : this.selectDate(this.dailyData);
+        },
+        selectDate(arr) {
+            return {
+                labels: arr[this.verifiedCountry].map(d => d.date),
                 datasets: [
                     {
                         backgroundColor: '#888899',
-                        data: this.fitData[this.verifiedCountry].map(d => this.getFieldType(d))
-                    }]
+                        data: arr[this.verifiedCountry].map(d => this.getFieldType(d))
+                    }
+                ]
             }
         },
         getFieldType(d) {
             return d[this._fieldType];
         },
         getSummary() {
-            let arr = this.fitData[this.verifiedCountry];
+            let arr = this.dailyData[this.verifiedCountry];
             this.summaryDate = arr[arr.length-1].date;
             this.summary.confirmed = 0;
             this.summary.deaths = 0;
@@ -168,7 +189,7 @@ export default {
             }
         },
         validateCountry() {
-            if (this.fitData[this.country] !== undefined) {
+            if (this.dailyData[this.country] !== undefined) {
                 this.verifiedCountry = this.country;
             }
             else {
@@ -176,10 +197,11 @@ export default {
             }
         },
         getCountries() {
-            this.countries = Object.keys(this.fitData).sort();
+            this.countries = Object.keys(this.dailyData).sort();
         },
         countryChanged() {
             this.getSummary();
+            this.fillData();
         },
         clickFieldType(i) {
             this._fieldType = fieldTypes[i];
@@ -195,6 +217,9 @@ export default {
     watch: {
         fieldType() {
             this._fieldType = this.fieldType;
+            this.fillData();
+        },
+        dataType() {
             this.fillData();
         },
     }
