@@ -32,15 +32,15 @@
 </template>
 
 <script>
-import {chartTypes, fieldTypes, dataTypes} from './Common/Constants.js'
-import lineChart from './LineChart'
-import barChart from './BarChart'
-import json from './timeseries.json'
+import {chartTypes, fieldTypes, dataTypes} from './common/constants.js'
+import LineChart from './lineChart'
+import BarChart from './barChart'
+import json from '../assets/timeseries.json'
 
 export default {
     components: {
-        lineChart,
-        barChart
+        LineChart,
+        BarChart
     },
     props: {
         country: String,
@@ -217,7 +217,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .chart-wrapper {
     text-align: left;
 }

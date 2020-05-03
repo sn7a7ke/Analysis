@@ -28,8 +28,8 @@
 </template>
 
 <script>
-import {chartTypes, fieldTypes, dataTypes} from './assets/Common/Constants.js'
-import ChartWrapper from './assets/ChartWrapper'
+import {chartTypes, fieldTypes, dataTypes} from './app/common/constants.js'
+import ChartWrapper from './app/chartWrapper'
 
 export default {
     components: {
