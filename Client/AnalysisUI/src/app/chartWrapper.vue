@@ -33,6 +33,7 @@
 
 <script>
 import {chartTypes, fieldTypes, dataTypes} from './common/constants.js'
+import {chartOptions} from './common/chartOptions.js'
 import LineChart from './lineChart'
 import BarChart from './barChart'
 import json from '../assets/timeseries.json'
@@ -56,26 +57,7 @@ export default {
     data(){
         return {
             datacollection: null,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    xAxes: [{
-                        ticks: {
-                            maxRotation: 90,
-                            minRotation: 90
-                        }
-                    }],
-                    yAxes: [{
-                        ticks: {
-                            suggestedMin: 0,
-                        }
-                    }]
-                },
-                legend: {
-                    display: false,
-                }
-            },
+            options: chartOptions,
             rawData: [],
             dailyData: [],
             totalData: [],

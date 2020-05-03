@@ -3,3 +3,6 @@
 	min-width: 500px;
 	margin: 0 auto;
 }
+#line-chart, #bar-chart{
+	height: 350px;
+}
