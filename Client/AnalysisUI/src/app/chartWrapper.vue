@@ -32,8 +32,8 @@
 </template>
 
 <script>
-import {chartTypes, fieldTypes, dataTypes} from './common/constants.js'
-import {chartOptions} from './common/chartOptions.js'
+import {chartTypes, fieldTypes, dataTypes} from './common/constants.ts'
+import {chartOptions} from './common/chartOptions.ts'
 import LineChart from './lineChart'
 import BarChart from './barChart'
 import json from '../assets/timeseries.json'
