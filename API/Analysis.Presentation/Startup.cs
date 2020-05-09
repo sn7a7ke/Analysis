@@ -24,7 +24,10 @@ namespace Analysis.Presentation
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
+
             services.AddControllers();
+
             var fileStorage = new FileStorage("./Storage/covidInfoTimeseries.json");
             services.AddSingleton<IStorage>(fileStorage);
             services.AddSingleton<IExternalStorage, PomCovidExternalStorage>();
@@ -38,6 +41,12 @@ namespace Analysis.Presentation
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(builder => builder
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .SetIsOriginAllowed(_ => true)
+                .AllowCredentials());
 
             app.UseHttpsRedirection();
 
