@@ -1,8 +1,7 @@
 using Analysis.Application;
 using Analysis.Application.Interface;
 using Analysis.Common;
-using Analysis.Data;
-using Analysis.Data.Interface;
+using Analysis.Data.Pom;
 using Analysis.Infrastructure;
 using Analysis.Infrastructure.Interface;
 using Microsoft.AspNetCore.Builder;
@@ -33,9 +32,8 @@ namespace Analysis.Presentation
             var appSettings = Configuration.GetSection(typeof(AppSettings).Name).Get<AppSettings>();
             services.AddSingleton(appSettings);
 
-            var storagePath = $"{appSettings.StorageFolder}/{appSettings.PomCovid.JsonFileName}";
-            var fileStorage = new FileStorage(storagePath);
-            services.AddSingleton<IStorage>(fileStorage);
+            var pomStorage = new PomStorage(appSettings);
+            services.AddSingleton<PomStorage>(pomStorage);
             services.AddSingleton<IExternalStorage, PomCovidExternalStorage>();
             services.AddScoped<ICovidAppService, PomCovidAppService>();
 

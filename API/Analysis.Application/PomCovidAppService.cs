@@ -1,5 +1,5 @@
 ﻿using Analysis.Application.Interface;
-using Analysis.Data.Interface;
+using Analysis.Data.Pom;
 using Analysis.Infrastructure.Interface;
 using System.Threading.Tasks;
 
@@ -8,31 +8,28 @@ namespace Analysis.Application
     public class PomCovidAppService : ICovidAppService
     {
         private readonly IExternalStorage externalStorage;
-        private readonly IStorage storage;
-        private string jsonCovid;
+        private readonly PomStorage pomStorage;
 
-        public string JsonCovid
+        public string Json
         { 
             get 
             {
-                if (string.IsNullOrEmpty(this.jsonCovid))
-                    this.jsonCovid = this.storage.Load();
-                if (string.IsNullOrEmpty(this.jsonCovid))
+                if (string.IsNullOrEmpty(this.pomStorage.Json))
                     RefreshDataAsync().Wait();
-                return jsonCovid; 
+                return this.pomStorage.Json; 
             }
         }
 
-        public PomCovidAppService(IExternalStorage externalStorage, IStorage storage)
+        public PomCovidAppService(IExternalStorage externalStorage, PomStorage pomStorage)
         {
             this.externalStorage = externalStorage;
-            this.storage = storage;
+            this.pomStorage = pomStorage;
         }
 
         public async Task RefreshDataAsync()
         {
-            this.jsonCovid = await this.externalStorage.GetAsync();
-            this.storage.Save(this.jsonCovid);
+            var jsonCovid = await this.externalStorage.GetAsync();
+            this.pomStorage.Save(jsonCovid);
         }
     }
 }

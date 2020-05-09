@@ -21,7 +21,7 @@ namespace Analysis.Presentation.Controllers
         [Route("rawJson")]
         public string GetJson()
         {
-            return this.covidAppService.JsonCovid;
+            return this.covidAppService.Json;
         }
     }
 }
