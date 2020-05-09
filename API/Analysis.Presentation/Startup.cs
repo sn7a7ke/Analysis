@@ -1,5 +1,6 @@
 using Analysis.Application;
 using Analysis.Application.Interface;
+using Analysis.Common;
 using Analysis.Data;
 using Analysis.Data.Interface;
 using Analysis.Infrastructure;
@@ -29,7 +30,11 @@ namespace Analysis.Presentation
 
             services.AddControllers();
 
-            var fileStorage = new FileStorage("./Storage/covidInfoTimeseries.json");
+            var appSettings = Configuration.GetSection(typeof(AppSettings).Name).Get<AppSettings>();
+            services.AddSingleton(appSettings);
+
+            var storagePath = $"{appSettings.StorageFolder}/{appSettings.PomCovid.JsonFileName}";
+            var fileStorage = new FileStorage(storagePath);
             services.AddSingleton<IStorage>(fileStorage);
             services.AddSingleton<IExternalStorage, PomCovidExternalStorage>();
             services.AddScoped<ICovidAppService, PomCovidAppService>();
