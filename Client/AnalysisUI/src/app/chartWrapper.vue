@@ -32,11 +32,11 @@
 </template>
 
 <script>
+import axios from 'axios'
 import {chartTypes, fieldTypes, dataTypes} from './common/constants.ts'
 import {chartOptions} from './common/chartOptions.ts'
 import LineChart from './lineChart'
 import BarChart from './barChart'
-import json from '../assets/timeseries.json'
 
 export default {
     components: {
@@ -72,20 +72,35 @@ export default {
     },
     mounted() {
         this._fieldType = this.fieldType;
-        this.rawData = this.getRawData();
-        this.dailyData = this.getConvertData(this.dailyConvertRow);
-        this.totalData = this.getConvertData(this.totalConvertRow);
-        this.countries = this.getCountries();
-        this.verifiedCountry = this.validateCountry();
-        this.summary = this.getSummary();
-        this.fillData();
-        this.isReady = true;
+        this.getRawData();
     },
     beforeUpdate() {
     },
     methods: {
         getRawData() {
-            return json;
+            this.getHttpRquest().then(result => {
+                this.rawData = result;
+                this.initialize();
+            });
+        },
+        getHttpRquest() {
+            return axios
+                .get('https://localhost:44330/covid19/rawJson')
+                .then(response => {
+                    return response.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                });    
+        },
+        initialize() {
+            this.dailyData = this.getConvertData(this.dailyConvertRow);
+            this.totalData = this.getConvertData(this.totalConvertRow);
+            this.countries = this.getCountries();
+            this.verifiedCountry = this.validateCountry();
+            this.summary = this.getSummary();
+            this.fillData();
+            this.isReady = true;
         },
         getConvertData(сonvertRow) {
             var tempData = [];
