@@ -4,7 +4,7 @@ namespace Analysis.Application.Interface
 {
     public interface ICovidAppService
     {
-        string GetJson();
+        string JsonCovid { get; }
         Task RefreshDataAsync();
     }
 }

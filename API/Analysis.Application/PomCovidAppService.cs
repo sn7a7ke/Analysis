@@ -11,6 +11,18 @@ namespace Analysis.Application
         private readonly IStorage storage;
         private string jsonCovid;
 
+        public string JsonCovid
+        { 
+            get 
+            {
+                if (string.IsNullOrEmpty(this.jsonCovid))
+                    this.jsonCovid = this.storage.Load();
+                if (string.IsNullOrEmpty(this.jsonCovid))
+                    RefreshDataAsync().Wait();
+                return jsonCovid; 
+            }
+        }
+
         public PomCovidAppService(IExternalStorage externalStorage, IStorage storage)
         {
             this.externalStorage = externalStorage;
@@ -21,15 +33,6 @@ namespace Analysis.Application
         {
             this.jsonCovid = await this.externalStorage.GetAsync();
             this.storage.Save(this.jsonCovid);
-        }
-
-        public string GetJson()
-        {
-            if (string.IsNullOrEmpty(this.jsonCovid))
-                this.jsonCovid = this.storage.Load();
-            if (string.IsNullOrEmpty(this.jsonCovid))
-                RefreshDataAsync().Wait();
-            return this.jsonCovid;
         }
     }
 }
