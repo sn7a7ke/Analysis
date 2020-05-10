@@ -31,6 +31,7 @@ namespace Analysis.Data.Pom
             {
                 var countryRes = new List<PomCovidInfo>();
                 var series = country.Value;
+                countryRes.Add(series[0]);
                 for (int i = 1; i < series.Count; i++)
                 {
                     countryRes.Add(Diff(series[i-1], series[i]));
