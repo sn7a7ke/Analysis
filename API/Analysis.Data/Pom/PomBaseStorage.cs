@@ -11,16 +11,8 @@ namespace Analysis.Data.Pom
     {
         protected readonly PomRawStorage pomRawStorage;
         protected Dictionary<string, List<PomCovidInfo>> all;
+        protected List<string> countries;
         protected readonly string summaryKey;
-
-        public Dictionary<string, List<PomCovidInfo>> All
-        {
-            get
-            {
-                this.all = this.all ?? Parse();
-                return this.all;
-            }
-        }
 
         public PomBaseStorage(PomRawStorage pomRawStorage, AppSettings appSettings)
         {
@@ -30,15 +22,27 @@ namespace Analysis.Data.Pom
 
         public Dictionary<string, List<PomCovidInfo>> GetAll()
         {
-            return All;
+            this.all = this.all ?? Parse();
+            return this.all;
         }
 
         public List<PomCovidInfo> GetByCountry(string country)
         {
-            return All.ContainsKey(country) ? All[country] : new List<PomCovidInfo>();
+            return GetAll().ContainsKey(country) ? GetAll()[country] : new List<PomCovidInfo>();
+        }
+
+        public PomCovidInfo GetSummary()
+        {
+            return GetSummaryByCountry(this.summaryKey);
         }
 
         public abstract PomCovidInfo GetSummaryByCountry(string country);
+
+        public List<string> GetAllCountries()
+        {
+                this.countries = this.countries ?? GetAll().Keys.ToList();
+                return this.countries;
+        }
 
         private Dictionary<string, List<PomCovidInfo>> Parse()
         {

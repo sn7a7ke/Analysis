@@ -20,24 +20,38 @@ namespace Analysis.Presentation.Controllers
         }
 
         [HttpGet]
-        [Route("GetAll")]
+        [Route("All")]
         public Dictionary<string, List<PomCovidInfo>> GetAll()
         {
             return this.pomCovidBaseAppService.GetAll();
         }
 
         [HttpGet]
-        [Route("GetByCountry")]
+        [Route("All/{country}")]
         public List<PomCovidInfo> GetByCountry(string country)
         {
             return this.pomCovidBaseAppService.GetByCountry(country);
         }
 
         [HttpGet]
-        [Route("GetSummaryByCountry")]
+        [Route("Summary")]
+        public PomCovidInfo GetSummary()
+        {
+            return this.pomCovidBaseAppService.GetSummary();
+        }
+
+        [HttpGet]
+        [Route("Summary/{country}")]
         public PomCovidInfo GetSummaryByCountry(string country)
         {
             return this.pomCovidBaseAppService.GetSummaryByCountry(country);
+        }
+
+        [HttpGet]
+        [Route("AllCountries")]
+        public List<string> GetAllCountries()
+        {
+            return this.pomCovidBaseAppService.GetAllCountries();
         }
     }
 }

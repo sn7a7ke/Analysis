@@ -23,9 +23,19 @@ namespace Analysis.Application
             return this.pomStorage.GetByCountry(country);
         }
 
+        public PomCovidInfo GetSummary()
+        {
+            return this.pomStorage.GetSummary();
+        }
+
         public PomCovidInfo GetSummaryByCountry(string country)
         {
             return this.pomStorage.GetSummaryByCountry(country);
+        }
+
+        public List<string> GetAllCountries()
+        {
+            return this.pomStorage.GetAllCountries();
         }
     }
 }
