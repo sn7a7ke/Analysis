@@ -188,7 +188,7 @@ export default {
             return Object.keys(this.dailyData).sort();
         },
         countryChanged() {
-            this.getSummary();
+            this.summary = this.getSummary();
             this.fillData();
         },
         clickFieldType(i) {
