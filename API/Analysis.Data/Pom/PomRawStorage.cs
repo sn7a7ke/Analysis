@@ -2,9 +2,8 @@
 
 namespace Analysis.Data.Pom
 {
-    public class PomStorage
+    public class PomRawStorage
     {
-        private readonly AppSettings appSettings;
         private readonly FileStorage fileStorage;
         private string json;
 
@@ -18,9 +17,8 @@ namespace Analysis.Data.Pom
             }
         }
 
-        public PomStorage(AppSettings appSettings)
+        public PomRawStorage(AppSettings appSettings)
         {
-            this.appSettings = appSettings;
             var storagePath = $"{appSettings.StorageFolder}/{appSettings.PomCovid.JsonFileName}";
             this.fileStorage = new FileStorage(storagePath);
         }

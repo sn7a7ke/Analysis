@@ -6,19 +6,19 @@ namespace Analysis.Presentation.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class Covid19Controller : ControllerBase
+    public class PomCovidRawController : ControllerBase
     {
-        private readonly ICovidAppService covidAppService;
-        private readonly ILogger<Covid19Controller> logger;
+        private readonly IRawAppService covidAppService;
+        private readonly ILogger<PomCovidRawController> logger;
 
-        public Covid19Controller(ICovidAppService covidAppService, ILogger<Covid19Controller> logger)
+        public PomCovidRawController(IRawAppService covidAppService, ILogger<PomCovidRawController> logger)
         {
             this.covidAppService = covidAppService;
             this.logger = logger;
         }
 
         [HttpGet]
-        [Route("rawJson")]
+        [Route("Json")]
         public string GetJson()
         {
             return this.covidAppService.Json;

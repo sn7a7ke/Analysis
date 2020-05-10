@@ -2,7 +2,7 @@
 
 namespace Analysis.Application.Interface
 {
-    public interface ICovidAppService
+    public interface IRawAppService
     {
         string Json { get; }
         Task RefreshDataAsync();

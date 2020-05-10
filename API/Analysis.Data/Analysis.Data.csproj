@@ -4,4 +4,9 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Analysis.Common\Analysis.Common.csproj" />
+    <ProjectReference Include="..\Analysis.Domain\Analysis.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -85,7 +85,7 @@ export default {
         },
         getHttpRquest() {
             return axios
-                .get('https://localhost:44330/covid19/rawJson')
+                .get('https://localhost:44330/PomCovidRaw/Json')
                 .then(response => {
                     return response.data;
                 })

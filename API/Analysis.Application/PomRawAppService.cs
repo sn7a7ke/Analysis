@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace Analysis.Application
 {
-    public class PomCovidAppService : ICovidAppService
+    public class PomRawAppService : IRawAppService
     {
         private readonly IExternalStorage externalStorage;
-        private readonly PomStorage pomStorage;
+        private readonly PomRawStorage pomStorage;
 
         public string Json
         { 
@@ -20,7 +20,7 @@ namespace Analysis.Application
             }
         }
 
-        public PomCovidAppService(IExternalStorage externalStorage, PomStorage pomStorage)
+        public PomRawAppService(IExternalStorage externalStorage, PomRawStorage pomStorage)
         {
             this.externalStorage = externalStorage;
             this.pomStorage = pomStorage;

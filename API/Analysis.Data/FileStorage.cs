@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Analysis.Data
 {
-    public class FileStorage : IStorage
+    public class FileStorage : IRawStorage
     {
         private string fileName = string.Empty;
 

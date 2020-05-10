@@ -29,13 +29,7 @@ namespace Analysis.Presentation
 
             services.AddControllers();
 
-            var appSettings = Configuration.GetSection(typeof(AppSettings).Name).Get<AppSettings>();
-            services.AddSingleton(appSettings);
-
-            var pomStorage = new PomStorage(appSettings);
-            services.AddSingleton<PomStorage>(pomStorage);
-            services.AddSingleton<IExternalStorage, PomCovidExternalStorage>();
-            services.AddScoped<ICovidAppService, PomCovidAppService>();
+            this.ConfigureModules(services);
 
             services.AddSwaggerGen(c =>
             {
@@ -73,6 +67,22 @@ namespace Analysis.Presentation
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private void ConfigureModules(IServiceCollection services)
+        {
+            var appSettings = Configuration.GetSection(typeof(AppSettings).Name).Get<AppSettings>();
+            services.AddSingleton(appSettings);
+
+            var pomRawStorage = new PomRawStorage(appSettings);
+            services.AddSingleton(pomRawStorage);
+            services.AddSingleton<IExternalStorage, PomCovidExternalStorage>();
+            services.AddScoped<PomDailyStorage>();
+            services.AddScoped<PomSeriesStorage>();
+
+            services.AddScoped<IRawAppService, PomRawAppService>();
+            services.AddScoped<PomDailyAppService>();
+            services.AddScoped<PomSeriesAppService>();
         }
     }
 }
