@@ -77,12 +77,12 @@ namespace Analysis.Presentation
             var pomRawStorage = new PomRawStorage(appSettings);
             services.AddSingleton(pomRawStorage);
             services.AddSingleton<IExternalStorage, PomCovidExternalStorage>();
+            services.AddScoped<PomTotalStorage>();
             services.AddScoped<PomDailyStorage>();
-            services.AddScoped<PomSeriesStorage>();
 
             services.AddScoped<IRawAppService, PomRawAppService>();
+            services.AddScoped<PomTotalAppService>();
             services.AddScoped<PomDailyAppService>();
-            services.AddScoped<PomSeriesAppService>();
         }
     }
 }

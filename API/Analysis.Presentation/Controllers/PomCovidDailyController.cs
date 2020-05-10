@@ -8,7 +8,7 @@ namespace Analysis.Presentation.Controllers
     [Route("[controller]")]
     public class PomCovidDailyController : PomCovidBaseController
     {
-        public PomCovidDailyController(PomDailyAppService pomCovidDailyAppService, ILogger<PomCovidDailyController> logger) : 
+        public PomCovidDailyController(PomDailyAppService pomCovidDailyAppService, ILogger<PomCovidDailyController> logger) :
             base(pomCovidDailyAppService, logger)
         {
         }
