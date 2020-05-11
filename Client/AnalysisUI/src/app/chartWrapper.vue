@@ -32,11 +32,11 @@
 </template>
 
 <script>
-import axios from 'axios'
 import {chartTypes, fieldTypes, dataTypes} from './common/constants.ts'
 import {chartOptions} from './common/chartOptions.ts'
 import LineChart from './lineChart'
 import BarChart from './barChart'
+import {PomApiService} from './services/pom.api.service.js'
 
 export default {
     components: {
@@ -68,30 +68,22 @@ export default {
             summary: {},
             summaryDate: '',
             countries: [],
+            pomApiService: null,
         }
     },
     mounted() {
         this._fieldType = this.fieldType;
+        this.pomApiService = new PomApiService();
         this.getRawData();
     },
     beforeUpdate() {
     },
     methods: {
         getRawData() {
-            this.getHttpRquest().then(result => {
+            this.pomApiService.getRaw().then(result => {
                 this.rawData = result;
                 this.initialize();
             });
-        },
-        getHttpRquest() {
-            return axios
-                .get('https://localhost:44330/PomCovidRaw/Json')
-                .then(response => {
-                    return response.data;
-                })
-                .catch(error => {
-                    console.log(error);
-                });    
         },
         initialize() {
             this.dailyData = this.getConvertData(this.dailyConvertRow);
@@ -103,7 +95,7 @@ export default {
             this.isReady = true;
         },
         getConvertData(сonvertRow) {
-            var tempData = [];
+            let tempData = [];
             Object.keys(this.rawData).forEach( key => {
                 let dc = this.rawData[key];
                 tempData[key]=сonvertRow(dc);
@@ -112,21 +104,21 @@ export default {
             return tempData;
         },
         dailyConvertRow(dc) {
-            var tempRow = [];
+            let tempRow = [];
             for (let i = 1; i < dc.length; i++) {
                 tempRow.push(this.diff(dc[i - 1], dc[i]));
             }
             return tempRow
         },
         totalConvertRow(dc) {
-            var tempRow = [];
+            let tempRow = [];
             for (let i = 0; i < dc.length; i++) {
                 tempRow.push(dc[i]);
             }
             return tempRow
         },
         calculateTotalField(arr) {
-            var tempData = [];
+            let tempData = [];
             let keys = Object.keys(arr);
             let dc = arr[keys[0]];
             for (let i = 0; i < dc.length; i++) {
@@ -134,7 +126,7 @@ export default {
             }
             keys.forEach( key => {
                 let dc = arr[key];
-                var country = [];
+                let country = [];
                 for (let i = 0; i < dc.length; i++) {
                     tempData[i].confirmed += dc[i].confirmed;
                     tempData[i].deaths += dc[i].deaths;
@@ -196,7 +188,7 @@ export default {
             this.fillData();
         },
         isFieldType(i) {
-            var expr = fieldTypes[i] == this._fieldType;
+            let expr = fieldTypes[i] == this._fieldType;
             return {'active': expr};
         },
     },
