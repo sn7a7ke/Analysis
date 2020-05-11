@@ -9,7 +9,9 @@
                 </option>
             </select>
             <div class="d-inline col-10">
-                <h6 class="d-inline pointer">{{dataType.toUpperCase()}}</h6>
+                <h6 class="d-inline pointer" @click="clickDataType()">
+                    {{_dataType.toUpperCase()}}
+                </h6>
                 <h6 class="d-inline pointer" :class="isFieldType(index)"
                         v-for="(value, name, index) in summary" :key="index"
                         @click="clickFieldType(index)">
@@ -51,7 +53,7 @@ export default {
         dataType: String,
     },
     filters: {
-        numeric: function(value) {
+        numeric(value) {
             return new Intl.NumberFormat().format(value);
         },
     },
@@ -63,6 +65,7 @@ export default {
             verifiedCountry: '',
             countryData: [],
             _fieldType: '',
+            _dataType: '',
             totalKey: 'World',
             summary: {},
             countries: [],
@@ -71,6 +74,7 @@ export default {
     },
     mounted() {
         this._fieldType = this.fieldType;
+        this._dataType = this.dataType;
         this.pomApiService = new PomApiService();
         this.initializeComponent();
     },
@@ -78,7 +82,7 @@ export default {
     },
     methods: {
         initializeComponent() {
-            return this.pomApiService.getAllCountries(this.dataType)
+            return this.pomApiService.getAllCountries(this._dataType)
                 .then(result => {
                     this.countries = result;
                     this.verifyCountry();
@@ -100,7 +104,7 @@ export default {
                 });
         },
         getSummary() {
-            return this.pomApiService.getSummary(this.dataType, this.verifiedCountry)
+            return this.pomApiService.getSummary(this._dataType, this.verifiedCountry)
                 .then(result => {
                     this.summaryMap(result);
                 });
@@ -111,7 +115,7 @@ export default {
             this.summary.recovered = result.recovered;
         },
         getData() {
-            return this.pomApiService.getAll(this.dataType, this.verifiedCountry)
+            return this.pomApiService.getAll(this._dataType, this.verifiedCountry)
                 .then(result => {
                         this.countryData = result;
                 });
@@ -132,6 +136,15 @@ export default {
             this._fieldType = fieldTypes[i];
             this.fillData();
         },
+        clickDataType() {
+            this._dataType = this.getNextElement(dataTypes, this._dataType);
+            this.refresh();
+        },
+        getNextElement(arr, el) {
+            let idx = arr.findIndex(x => x == el);
+            let nextIdx = (idx + 1) % arr.length;
+            return arr[nextIdx];
+        },
         isFieldType(i) {
             let expr = fieldTypes[i] == this._fieldType;
             return {'active': expr};
@@ -145,6 +158,7 @@ export default {
             this.fillData();
         },
         dataType() {
+            this._dataType = this.dataType
             this.refresh();
         },
     }
