@@ -1,7 +1,8 @@
 <template>
     <div class="chart-wrapper border border-info rounded m-2" v-if="isReady">
         <div class="m-2">
-            <select class="d-inline font-weight-bold col-2" v-model="verifiedCountry" @change="countryChanged">
+            <select class="d-inline font-weight-bold col-2" 
+                    v-model="verifiedCountry" @change="countryChanged">
                 <option v-for="(option, index) in countries" :key="index"
                     v-bind:value="option" >
                     {{ option }}
@@ -9,8 +10,8 @@
             </select>
             <div class="d-inline col-10">
                 <h6 class="d-inline pointer">{{dataType.toUpperCase()}}</h6>
-                <h6 v-for="(value, name, index) in summary" :key="index"
-                        class="d-inline pointer" :class="isFieldType(index)" 
+                <h6 class="d-inline pointer" :class="isFieldType(index)"
+                        v-for="(value, name, index) in summary" :key="index"
                         @click="clickFieldType(index)">
                     {{name}}: <b>{{value | numeric}}</b>
                 </h6>
@@ -58,15 +59,12 @@ export default {
         return {
             datacollection: null,
             options: chartOptions,
-            rawData: [],
-            dailyData: [],
-            totalData: [],
             isReady: false,
             verifiedCountry: '',
+            countryData: [],
             _fieldType: '',
             totalKey: 'World',
             summary: {},
-            summaryDate: '',
             countries: [],
             pomApiService: null,
         }
@@ -74,114 +72,61 @@ export default {
     mounted() {
         this._fieldType = this.fieldType;
         this.pomApiService = new PomApiService();
-        this.getRawData();
+        this.initializeComponent();
     },
     beforeUpdate() {
     },
     methods: {
-        getRawData() {
-            this.pomApiService.getRaw().then(result => {
-                this.rawData = result;
-                this.initialize();
-            });
+        initializeComponent() {
+            return this.pomApiService.getAllCountries(this.dataType)
+                .then(result => {
+                    this.countries = result;
+                    this.verifyCountry();
+                    return this.refresh();
+                })
+                .then(result => {
+                    this.isReady = true;
+                });
         },
-        initialize() {
-            this.dailyData = this.getConvertData(this.dailyConvertRow);
-            this.totalData = this.getConvertData(this.totalConvertRow);
-            this.countries = this.getCountries();
-            this.verifiedCountry = this.validateCountry();
-            this.summary = this.getSummary();
-            this.fillData();
-            this.isReady = true;
-        },
-        getConvertData(сonvertRow) {
-            let tempData = [];
-            Object.keys(this.rawData).forEach( key => {
-                let dc = this.rawData[key];
-                tempData[key]=сonvertRow(dc);
-            });
-            this.calculateTotalField(tempData);
-            return tempData;
-        },
-        dailyConvertRow(dc) {
-            let tempRow = [];
-            for (let i = 1; i < dc.length; i++) {
-                tempRow.push(this.diff(dc[i - 1], dc[i]));
-            }
-            return tempRow
-        },
-        totalConvertRow(dc) {
-            let tempRow = [];
-            for (let i = 0; i < dc.length; i++) {
-                tempRow.push(dc[i]);
-            }
-            return tempRow
-        },
-        calculateTotalField(arr) {
-            let tempData = [];
-            let keys = Object.keys(arr);
-            let dc = arr[keys[0]];
-            for (let i = 0; i < dc.length; i++) {
-                tempData.push({date: dc[i].date, confirmed: 0, deaths: 0, recovered: 0});
-            }
-            keys.forEach( key => {
-                let dc = arr[key];
-                let country = [];
-                for (let i = 0; i < dc.length; i++) {
-                    tempData[i].confirmed += dc[i].confirmed;
-                    tempData[i].deaths += dc[i].deaths;
-                    tempData[i].recovered += dc[i].recovered;
-                }
-            });
-            arr[this.totalKey] = tempData;
-        },
-        diff(di1, di2) {
-            return {
-                date: di2.date,
-                confirmed: di2.confirmed - di1.confirmed,
-                deaths: di2.deaths - di1.deaths,
-                recovered: di2.recovered - di1.recovered
-            };
-        },
-        fillData() {
-            this.datacollection = (this.dataType == dataTypes[0])
-                    ? this.selectDate(this.totalData)
-                    : this.selectDate(this.dailyData);
-        },
-        selectDate(arr) {
-            return {
-                labels: arr[this.verifiedCountry].map(d => d.date),
-                datasets: [
-                    {
-                        backgroundColor: '#888899',
-                        data: arr[this.verifiedCountry].map(d => this.getFieldType(d))
-                    }
-                ]
-            }
-        },
-        getFieldType(d) {
-            return d[this._fieldType];
-        },
-        getSummary() {
-            let arr = this.totalData[this.verifiedCountry];
-            let le = arr[arr.length-1];
-            return {
-                confirmed: le.confirmed,
-                deaths: le.deaths,
-                recovered: le.recovered
-            }
-        },
-        validateCountry() {
-            return (this.dailyData[this.country] !== undefined)
+        verifyCountry() {
+            this.verifiedCountry = (this.countries.includes(this.country))
                     ? this.country
                     : this.totalKey;
         },
-        getCountries() {
-            return Object.keys(this.dailyData).sort();
+        refresh() {
+            return Promise.all([this.getSummary(), this.getData()])
+                .then(result => {
+                    this.fillData();
+                });
+        },
+        getSummary() {
+            return this.pomApiService.getSummary(this.dataType, this.verifiedCountry)
+                .then(result => {
+                    this.summaryMap(result);
+                });
+        },
+        summaryMap(result) {
+            this.summary.confirmed = result.confirmed;
+            this.summary.deaths = result.deaths;
+            this.summary.recovered = result.recovered;
+        },
+        getData() {
+            return this.pomApiService.getAll(this.dataType, this.verifiedCountry)
+                .then(result => {
+                        this.countryData = result;
+                });
+        },
+        fillData() {
+            this.datacollection = {
+                labels: this.countryData.map(d => d.date),
+                datasets: [{
+                    backgroundColor: '#888899',
+                    data: this.countryData.map(d => d[this._fieldType])
+                }]
+            }
         },
         countryChanged() {
-            this.summary = this.getSummary();
-            this.fillData();
+            this.refresh();
         },
         clickFieldType(i) {
             this._fieldType = fieldTypes[i];
@@ -200,7 +145,7 @@ export default {
             this.fillData();
         },
         dataType() {
-            this.fillData();
+            this.refresh();
         },
     }
 }
