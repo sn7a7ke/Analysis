@@ -1,22 +1,24 @@
 <template>
     <div class="chart-wrapper border border-info rounded m-2" v-if="isReady">
-        <div class="m-2">
-            <select class="d-inline font-weight-bold col-2" 
+        <div class="d-flex m-1">
+            <select class="font-weight-bold col-2 m-2 p-1"
                     v-model="verifiedCountry" @change="countryChanged">
                 <option v-for="(option, index) in countries" :key="index"
                     v-bind:value="option" >
                     {{ option }}
                 </option>
             </select>
-            <div class="d-inline col-10">
-                <h6 class="d-inline pointer" @click="clickDataType()">
+            <div class="d-flex col-10">
+                <div class="summary pointer m-2 p-1"  :class="dataTypeClass"
+                        @mouseover="dataTypeMouseover"
+                        @click="dataTypeClick()">
                     {{_dataType.toUpperCase()}}
-                </h6>
-                <h6 class="d-inline pointer" :class="isFieldType(index)"
+                </div>
+                <div class="summary pointer m-2 p-1" :class="isFieldType(index)"
                         v-for="(value, name, index) in summary" :key="index"
-                        @click="clickFieldType(index)">
+                        @click="fieldTypeClick(index)">
                     {{name}}: <b>{{value | numeric}}</b>
-                </h6>
+                </div>
             </div>
         </div>
         <div class="m-1">
@@ -70,6 +72,7 @@ export default {
             summary: {},
             countries: [],
             pomApiService: null,
+            dataTypeClassToggler: true
         }
     },
     mounted() {
@@ -132,12 +135,14 @@ export default {
         countryChanged() {
             this.refresh();
         },
-        clickFieldType(i) {
+        fieldTypeClick(i) {
             this._fieldType = fieldTypes[i];
             this.fillData();
         },
-        clickDataType() {
+        dataTypeClick() {
             this._dataType = this.getNextElement(dataTypes, this._dataType);
+            this.dataTypeClassToggler = true;
+            setTimeout(() => this.dataTypeClassToggler = false, 1000);
             this.refresh();
         },
         getNextElement(arr, el) {
@@ -147,10 +152,16 @@ export default {
         },
         isFieldType(i) {
             let expr = fieldTypes[i] == this._fieldType;
-            return {'active': expr};
+            return {'active': expr, 'animate__animated': expr, 'animate__heartBeat': expr};
+        },
+        dataTypeMouseover() {
+            this.dataTypeClassToggler = false;
         },
     },
     computed: {
+        dataTypeClass() {
+            return {'animate__animated': this.dataTypeClassToggler, 'animate__heartBeat': this.dataTypeClassToggler};
+        },
     },
     watch: {
         fieldType() {
@@ -171,8 +182,12 @@ export default {
 }
 .active {
     background-color: #ddddee;
+    border-radius: 5px;
 }
 .pointer:hover {
     cursor: pointer;
+}
+.summary {
+    font-size: large;
 }
 </style>
