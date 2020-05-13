@@ -23,5 +23,12 @@ namespace Analysis.Presentation.Controllers
         {
             return this.covidAppService.Json;
         }
+
+        [HttpGet]
+        [Route("RefreshData")]
+        public bool GetRefreshDataJson()
+        {
+            return this.covidAppService.RefreshDataAsync().Result;            
+        }
     }
 }

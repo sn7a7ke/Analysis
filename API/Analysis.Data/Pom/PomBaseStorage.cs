@@ -47,6 +47,8 @@ namespace Analysis.Data.Pom
         private Dictionary<string, List<PomCovidInfo>> Parse()
         {
             var json = this.pomRawStorage.Json;
+            if (string.IsNullOrEmpty(json))
+                return new Dictionary<string, List<PomCovidInfo>>();
             var outcomeData = JsonConvert.DeserializeObject<Dictionary<string, List<PomCovidInfo>>>(json);
             outcomeData = Transform(outcomeData);
             if (!outcomeData.ContainsKey(this.summaryKey))

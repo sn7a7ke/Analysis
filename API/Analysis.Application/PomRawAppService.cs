@@ -26,10 +26,13 @@ namespace Analysis.Application
             this.pomStorage = pomStorage;
         }
 
-        public async Task RefreshDataAsync()
+        public async Task<bool> RefreshDataAsync()
         {
             var jsonCovid = await this.externalStorage.GetAsync();
+            if (string.IsNullOrEmpty(jsonCovid))
+                return false;
             this.pomStorage.Save(jsonCovid);
+            return true;
         }
     }
 }

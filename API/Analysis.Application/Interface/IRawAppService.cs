@@ -5,6 +5,6 @@ namespace Analysis.Application.Interface
     public interface IRawAppService
     {
         string Json { get; }
-        Task RefreshDataAsync();
+        Task<bool> RefreshDataAsync();
     }
 }
