@@ -1,23 +1,22 @@
 <template>
-    <div class="chart-wrapper border border-info rounded m-2" v-if="isReady">
-        <div class="d-flex m-1">
-            <select class="font-weight-bold col-2 m-2 p-1"
-                    v-model="verifiedCountry" @change="countryChanged">
-                <option v-for="(option, index) in countries" :key="index"
-                    v-bind:value="option" >
-                    {{ option }}
-                </option>
-            </select>
-            <div class="d-flex col-10">
-                <div class="summary pointer m-2 p-1"  :class="dataTypeClass"
+    <div class="chart-wrapper border border-info rounded m-2 p-2" v-if="isReady">
+        <div class="d-flex m-1 align-items-center">
+            <v-select class="flex-fill col country-dropdown p-1" 
+                :options="countries"
+                clearable="'false'"
+                v-model="verifiedCountry" 
+                @input="countryChanged">
+            </v-select>
+            <div class="d-flex col p-1 align-items-center">
+                <div class="summary pointer p-1"  :class="dataTypeClass"
                         @mouseover="dataTypeMouseover"
                         @click="dataTypeClick()">
                     {{_dataType.toUpperCase()}}
                 </div>
-                <div class="summary pointer m-2 p-1" :class="isFieldType(index)"
+                <div class="summary pointer p-1" :class="isFieldType(index)"
                         v-for="(value, name, index) in summary" :key="index"
                         @click="fieldTypeClick(index)">
-                    {{name}}: <b>{{value | numeric}}</b>
+                    {{name | capitalizeFirstLetter}}: <b>{{value | numeric}}</b>
                 </div>
             </div>
         </div>
@@ -37,6 +36,7 @@
 </template>
 
 <script>
+import vSelect from 'vue-select'
 import {chartTypes, fieldTypes, dataTypes} from './common/constants.ts'
 import {chartOptions} from './common/chartOptions.ts'
 import LineChart from './lineChart'
@@ -45,6 +45,7 @@ import {PomApiService} from './services/pom.api.service.js'
 
 export default {
     components: {
+        vSelect,
         LineChart,
         BarChart
     },
@@ -57,6 +58,9 @@ export default {
     filters: {
         numeric(value) {
             return new Intl.NumberFormat().format(value);
+        },
+        capitalizeFirstLetter(value) {
+            return value[0].toUpperCase() + value.substring(1).toLowerCase();
         },
     },
     data(){
@@ -177,6 +181,7 @@ export default {
 </script>
 
 <style scoped>
+@import '../../node_modules/vue-select/dist/vue-select.css';
 .chart-wrapper {
     text-align: left;
 }
@@ -189,5 +194,10 @@ export default {
 }
 .summary {
     font-size: large;
+    text-align: center;
+}
+.country-dropdown {
+    min-width: 200px;
+    max-width: 320px;
 }
 </style>
