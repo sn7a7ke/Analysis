@@ -50,10 +50,31 @@ export default {
         BarChart
     },
     props: {
-        country: String,
-        chartType: String,
-        fieldType: String,
-        dataType: String,
+        country: {
+            type: String,
+            default: this.defaultCountry,
+        },
+        chartType: {
+            type: String,
+            default: chartTypes[0],
+            validator(value) {
+                return chartTypes.includes(value);
+            }
+        },
+        fieldType: {
+            type: String,
+            default: fieldTypes[0],
+            validator(value) {
+                return fieldTypes.includes(value);
+            }
+        },
+        dataType: {
+            type: String,
+            default: dataTypes[0],
+            validator(value) {
+                return dataTypes.includes(value);
+            }
+        },
     },
     filters: {
         numeric(value) {
