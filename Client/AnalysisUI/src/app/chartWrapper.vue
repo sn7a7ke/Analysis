@@ -1,9 +1,9 @@
 <template>
     <div class="chart-wrapper border border-info rounded m-2 p-2" v-if="isReady">
         <div class="d-flex m-1 align-items-center">
-            <v-select class="flex-fill col country-dropdown p-1" 
+            <v-select class="country-dropdown p-1" 
                 :options="countries"
-                clearable="'false'"
+                :clearable="false"
                 v-model="verifiedCountry" 
                 @input="countryChanged">
             </v-select>
@@ -72,7 +72,7 @@ export default {
             countryData: [],
             _fieldType: '',
             _dataType: '',
-            totalKey: 'World',
+            defaultCountry: 'World',
             summary: {},
             countries: [],
             pomApiService: null,
@@ -102,7 +102,7 @@ export default {
         verifyCountry() {
             this.verifiedCountry = (this.countries.includes(this.country))
                     ? this.country
-                    : this.totalKey;
+                    : this.defaultCountry;
         },
         refresh() {
             return Promise.all([this.getSummary(), this.getData()])
@@ -197,7 +197,6 @@ export default {
     text-align: center;
 }
 .country-dropdown {
-    min-width: 200px;
-    max-width: 320px;
+    min-width: 250px;    
 }
 </style>
