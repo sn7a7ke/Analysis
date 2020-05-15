@@ -29,7 +29,7 @@
 
 <script>
 import {chartTypes, fieldTypes, dataTypes} from './app/common/constants.ts'
-import ChartWrapper from './app/chartWrapper'
+import ChartWrapper from './app/ChartWrapper'
 
 export default {
     components: {
@@ -46,6 +46,20 @@ export default {
             dataTypeId: 0,
             dataType: dataTypes[0],
         }
+    },
+    computed: {
+        nextChartType()
+        {
+            return this.getNextValue(chartTypes, this.chartTypeId + 1);
+        },
+        nextFieldType()
+        {
+            return this.getNextValue(fieldTypes, this.fieldTypeId + 1);
+        },
+        nextDataType()
+        {
+            return this.getNextValue(dataTypes, this.dataTypeId + 1);
+        },
     },
     methods: {
         toggleChartType() {
@@ -65,22 +79,6 @@ export default {
             return arr[idx % arr.length];
         },
     },
-    computed: {
-        nextChartType()
-        {
-            return this.getNextValue(chartTypes, this.chartTypeId + 1);
-        },
-        nextFieldType()
-        {
-            return this.getNextValue(fieldTypes, this.fieldTypeId + 1);
-        },
-        nextDataType()
-        {
-            return this.getNextValue(dataTypes, this.dataTypeId + 1);
-        },
-    },
-    beforeMount(){
-    }
 }
 </script>
 

@@ -11,7 +11,7 @@
                 <div class="summary pointer p-1"  :class="dataTypeClass"
                         @mouseover="dataTypeMouseover"
                         @click="dataTypeClick()">
-                    {{_dataType.toUpperCase()}}
+                    {{$_dataType.toUpperCase()}}
                 </div>
                 <div class="summary pointer p-1" :class="isFieldType(index)"
                         v-for="(value, name, index) in summary" :key="index"
@@ -39,8 +39,8 @@
 import vSelect from 'vue-select'
 import {chartTypes, fieldTypes, dataTypes} from './common/constants.ts'
 import {chartOptions} from './common/chartOptions.ts'
-import LineChart from './lineChart'
-import BarChart from './barChart'
+import LineChart from './LineChart'
+import BarChart from './BarChart'
 import {PomApiService} from './services/pom.api.service.js'
 
 export default {
@@ -48,6 +48,14 @@ export default {
         vSelect,
         LineChart,
         BarChart
+    },
+    filters: {
+        numeric(value) {
+            return new Intl.NumberFormat().format(value);
+        },
+        capitalizeFirstLetter(value) {
+            return value[0].toUpperCase() + value.substring(1).toLowerCase();
+        },
     },
     props: {
         country: {
@@ -76,14 +84,6 @@ export default {
             }
         },
     },
-    filters: {
-        numeric(value) {
-            return new Intl.NumberFormat().format(value);
-        },
-        capitalizeFirstLetter(value) {
-            return value[0].toUpperCase() + value.substring(1).toLowerCase();
-        },
-    },
     data(){
         return {
             datacollection: null,
@@ -91,8 +91,8 @@ export default {
             isReady: false,
             verifiedCountry: '',
             countryData: [],
-            _fieldType: '',
-            _dataType: '',
+            $_fieldType: '',
+            $_dataType: '',
             defaultCountry: 'World',
             summary: {},
             countries: [],
@@ -100,9 +100,24 @@ export default {
             dataTypeClassToggler: true
         }
     },
+    computed: {
+        dataTypeClass() {
+            return {'animate__animated': this.dataTypeClassToggler, 'animate__heartBeat': this.dataTypeClassToggler};
+        },
+    },
+    watch: {
+        fieldType() {
+            this.$_fieldType = this.fieldType;
+            this.fillData();
+        },
+        dataType() {
+            this.$_dataType = this.dataType
+            this.refresh();
+        },
+    },
     mounted() {
-        this._fieldType = this.fieldType;
-        this._dataType = this.dataType;
+        this.$_fieldType = this.fieldType;
+        this.$_dataType = this.dataType;
         this.pomApiService = new PomApiService();
         this.initializeComponent();
     },
@@ -110,7 +125,7 @@ export default {
     },
     methods: {
         initializeComponent() {
-            return this.pomApiService.getAllCountries(this._dataType)
+            return this.pomApiService.getAllCountries(this.$_dataType)
                 .then(result => {
                     this.countries = result;
                     this.verifyCountry();
@@ -132,7 +147,7 @@ export default {
                 });
         },
         getSummary() {
-            return this.pomApiService.getSummary(this._dataType, this.verifiedCountry)
+            return this.pomApiService.getSummary(this.$_dataType, this.verifiedCountry)
                 .then(result => {
                     this.summaryMap(result);
                 });
@@ -143,7 +158,7 @@ export default {
             this.summary.recovered = result.recovered;
         },
         getData() {
-            return this.pomApiService.getAll(this._dataType, this.verifiedCountry)
+            return this.pomApiService.getAll(this.$_dataType, this.verifiedCountry)
                 .then(result => {
                         this.countryData = result;
                 });
@@ -153,7 +168,7 @@ export default {
                 labels: this.countryData.map(d => d.date),
                 datasets: [{
                     backgroundColor: '#888899',
-                    data: this.countryData.map(d => d[this._fieldType])
+                    data: this.countryData.map(d => d[this.$_fieldType])
                 }]
             }
         },
@@ -161,11 +176,11 @@ export default {
             this.refresh();
         },
         fieldTypeClick(i) {
-            this._fieldType = fieldTypes[i];
+            this.$_fieldType = fieldTypes[i];
             this.fillData();
         },
         dataTypeClick() {
-            this._dataType = this.getNextElement(dataTypes, this._dataType);
+            this.$_dataType = this.getNextElement(dataTypes, this.$_dataType);
             this.dataTypeClassToggler = true;
             setTimeout(() => this.dataTypeClassToggler = false, 1000);
             this.refresh();
@@ -176,28 +191,13 @@ export default {
             return arr[nextIdx];
         },
         isFieldType(i) {
-            let expr = fieldTypes[i] == this._fieldType;
+            let expr = fieldTypes[i] == this.$_fieldType;
             return {'active': expr, 'animate__animated': expr, 'animate__heartBeat': expr};
         },
         dataTypeMouseover() {
             this.dataTypeClassToggler = false;
         },
     },
-    computed: {
-        dataTypeClass() {
-            return {'animate__animated': this.dataTypeClassToggler, 'animate__heartBeat': this.dataTypeClassToggler};
-        },
-    },
-    watch: {
-        fieldType() {
-            this._fieldType = this.fieldType;
-            this.fillData();
-        },
-        dataType() {
-            this._dataType = this.dataType
-            this.refresh();
-        },
-    }
 }
 </script>
 
