@@ -38,6 +38,8 @@ export const store = new Vuex.Store({
         },
         getSummary(store, payLoad) {
             let country = payLoad.country;
+            if (store.getters.summaryByCountry(country) !== undefined)
+                return;
             return pomApiService.getSummary(payLoad.dataType, country)
                 .then(summary => {
                     store.commit('setSummary', {summary, country});
@@ -45,6 +47,8 @@ export const store = new Vuex.Store({
         },
         getCountryData(store, payLoad) {
             let country = payLoad.country;
+            if (store.getters.countryDataByCountry(country) !== undefined)
+                return;
             return pomApiService.getAll(payLoad.dataType, country)
                 .then(countryData => {
                     store.commit('setCountryData', {countryData, country});
