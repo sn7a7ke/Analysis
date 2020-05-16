@@ -37,11 +37,13 @@
 
 <script>
 import vSelect from 'vue-select'
-import {chartTypes, fieldTypes, dataTypes} from './common/constants.ts'
-import {chartOptions} from './common/chartOptions.ts'
+import { chartTypes, fieldTypes, dataTypes } from './common/constants.ts'
+import { chartOptions } from './common/chartOptions.ts'
 import LineChart from './LineChart'
 import BarChart from './BarChart'
-import {PomApiService} from './services/pom.api.service.js'
+import { mapGetters } from 'vuex';
+import { mapActions } from 'vuex';
+
 
 export default {
     components: {
@@ -90,17 +92,27 @@ export default {
             options: chartOptions,
             isReady: false,
             verifiedCountry: '',
-            countryData: [],
             $_fieldType: '',
             $_dataType: '',
             defaultCountry: 'World',
-            summary: {},
-            countries: [],
-            pomApiService: null,
             dataTypeClassToggler: true
         }
     },
     computed: {
+        ...mapGetters([
+                'count',
+                'countries',
+                'summaryByCountry',
+                'countryDataByCountry',
+        ]),
+        summary() {
+            let res = { ...this.summaryByCountry(this.verifiedCountry)};
+            delete res.date;
+            return res;
+        },
+        countryData() {
+            return this.countryDataByCountry(this.verifiedCountry);
+        },
         dataTypeClass() {
             return {'animate__animated': this.dataTypeClassToggler, 'animate__heartBeat': this.dataTypeClassToggler};
         },
@@ -118,19 +130,18 @@ export default {
     mounted() {
         this.$_fieldType = this.fieldType;
         this.$_dataType = this.dataType;
-        this.pomApiService = new PomApiService();
         this.initializeComponent();
     },
     beforeUpdate() {
     },
     methods: {
+        ...mapActions([
+            'getSummary',
+            'getCountryData',
+        ]),        
         initializeComponent() {
-            return this.pomApiService.getAllCountries(this.$_dataType)
-                .then(result => {
-                    this.countries = result;
-                    this.verifyCountry();
-                    return this.refresh();
-                })
+            this.verifyCountry();
+            return this.refresh()
                 .then(result => {
                     this.isReady = true;
                 });
@@ -141,26 +152,16 @@ export default {
                     : this.defaultCountry;
         },
         refresh() {
-            return Promise.all([this.getSummary(), this.getData()])
+            let payLoad = {
+                dataType: this.$_dataType, 
+                country: this.verifiedCountry
+            };
+            return Promise.all([
+                    this.getSummary(payLoad),
+                    this.getCountryData(payLoad)
+                ])
                 .then(result => {
                     this.fillData();
-                });
-        },
-        getSummary() {
-            return this.pomApiService.getSummary(this.$_dataType, this.verifiedCountry)
-                .then(result => {
-                    this.summaryMap(result);
-                });
-        },
-        summaryMap(result) {
-            this.summary.confirmed = result.confirmed;
-            this.summary.deaths = result.deaths;
-            this.summary.recovered = result.recovered;
-        },
-        getData() {
-            return this.pomApiService.getAll(this.$_dataType, this.verifiedCountry)
-                .then(result => {
-                        this.countryData = result;
                 });
         },
         fillData() {

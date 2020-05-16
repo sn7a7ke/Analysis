@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- <h3 class="d-flex justify-content-center mt-1">{{ msg }}</h3> -->
-        <div class="wrapper mx-3">
+        <div class="wrapper mx-3" v-if="isReady">
             <chart-wrapper 
                 :country="'World'"
                 :chartType="chartType"
@@ -28,8 +28,9 @@
 </template>
 
 <script>
-import {chartTypes, fieldTypes, dataTypes} from './app/common/constants.ts'
+import { chartTypes, fieldTypes, dataTypes } from './app/common/constants.ts'
 import ChartWrapper from './app/ChartWrapper'
+import { mapActions } from 'vuex';
 
 export default {
     components: {
@@ -38,6 +39,7 @@ export default {
     data() {
         return {
             msg: 'Charts App',
+            isReady: false,
             country: 'US',
             chartTypeId: 0,
             chartType: chartTypes[0],
@@ -61,7 +63,19 @@ export default {
             return this.getNextValue(dataTypes, this.dataTypeId + 1);
         },
     },
+    mounted() {
+            this.initializeComponent();
+        },
     methods: {
+        ...mapActions([
+            'getAllCountries',
+        ]),
+        initializeComponent() {
+            this.getAllCountries(dataTypes[0])
+                .then(result => {
+                    this.isReady = true;
+                });
+        },        
         toggleChartType() {
             this.chartTypeId++;
             this.chartType = this.getNextValue(chartTypes, this.chartTypeId);
