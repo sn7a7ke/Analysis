@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { chartTypes, fieldTypes, dataTypes } from './app/common/constants.ts'
+import { chartTypes, fieldTypes, dataTypes } from './app/common/constants'
 import { getNextElement } from '../src/app/common/functions'
 import ChartWrapper from './app/ChartWrapper'
 import { mapActions } from 'vuex';
@@ -50,15 +50,15 @@ export default {
     computed: {
         nextChartType()
         {
-            return getNextElement(this.chartTypes, this.chartType);
+            return getNextElement(chartTypes, this.chartType);
         },
         nextFieldType()
         {
-            return getNextElement(this.fieldTypes, this.fieldType);
+            return getNextElement(fieldTypes, this.fieldType);
         },
         nextDataType()
         {
-            return getNextElement(this.dataTypes, this.dataType);
+            return getNextElement(dataTypes, this.dataType);
         },
     },
     mounted() {
@@ -75,13 +75,13 @@ export default {
                 });
         },        
         toggleChartType() {
-            this.chartType = getNextElement(this.chartTypes, this.chartType);
+            this.chartType = getNextElement(chartTypes, this.chartType);
         },
         toggleFieldType() {
-            this.fieldType = getNextElement(this.fieldTypes, this.fieldType);
+            this.fieldType = getNextElement(fieldTypes, this.fieldType);
         },
         toggleDataType() {
-            this.dataType = getNextElement(this.dataTypes, this.dataType);
+            this.dataType = getNextElement(dataTypes, this.dataType);
         },
     },
 }

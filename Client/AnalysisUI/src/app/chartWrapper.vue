@@ -37,9 +37,9 @@
 
 <script>
 import vSelect from 'vue-select'
-import { chartTypes, fieldTypes, dataTypes } from './common/constants.ts'
+import { chartTypes, fieldTypes, dataTypes } from './common/constants'
 import { getNextElement } from './common/functions'
-import { chartOptions } from './common/chartOptions.ts'
+import { chartOptions } from './common/chartOptions'
 import LineChart from './LineChart'
 import BarChart from './BarChart'
 import { mapGetters } from 'vuex';
@@ -182,9 +182,9 @@ export default {
             this.fillData();
         },
         dataTypeClick() {
-            this.$_dataType = getNextElement(this.dataTypes, this.$_dataType);
+            this.$_dataType = getNextElement(dataTypes, this.$_dataType);
             this.dataTypeClassToggler = true;
-            setTimeout(() => this.dataTypeClassToggler = false, 1000);
+            setTimeout(() => this.dataTypeClassToggler = false, 800);
             this.refresh();
         },
         isFieldType(i) {
