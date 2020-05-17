@@ -28,9 +28,9 @@
 </template>
 
 <script>
+import { chartTypes, fieldTypes, dataTypes } from './app/common/constants.ts'
 import { getNextElement } from '../src/app/common/functions'
 import ChartWrapper from './app/ChartWrapper'
-import { mapGetters } from 'vuex';
 import { mapActions } from 'vuex';
 
 export default {
@@ -42,17 +42,12 @@ export default {
             msg: 'Charts App',
             isReady: false,
             country: 'US',
-            chartType: null,
-            fieldType: null,
-            dataType: null,
+            chartType: chartTypes[0],
+            fieldType: fieldTypes[0],
+            dataType: dataTypes[0],
         }
     },
     computed: {
-        ...mapGetters([
-                'chartTypes',
-                'fieldTypes',
-                'dataTypes',
-        ]),
         nextChartType()
         {
             return getNextElement(this.chartTypes, this.chartType);
@@ -67,9 +62,6 @@ export default {
         },
     },
     mounted() {
-            this.chartType = this.chartTypes[0];
-            this.fieldType = this.fieldTypes[0];
-            this.dataType = this.dataTypes[0];
             this.initializeComponent();
         },
     methods: {
@@ -77,7 +69,7 @@ export default {
             'getAllCountries',
         ]),
         initializeComponent() {
-            this.getAllCountries(this.dataTypes[0])
+            this.getAllCountries(dataTypes[0])
                 .then(result => {
                     this.isReady = true;
                 });

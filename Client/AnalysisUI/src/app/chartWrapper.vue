@@ -37,6 +37,7 @@
 
 <script>
 import vSelect from 'vue-select'
+import { chartTypes, fieldTypes, dataTypes } from './common/constants.ts'
 import { getNextElement } from './common/functions'
 import { chartOptions } from './common/chartOptions.ts'
 import LineChart from './LineChart'
@@ -66,23 +67,23 @@ export default {
         },
         chartType: {
             type: String,
-            default: this.chartTypes[0],
+            default: chartTypes[0],
             validator(value) {
-                return this.chartTypes.includes(value);
+                return chartTypes.includes(value);
             }
         },
         fieldType: {
             type: String,
-            default: this.fieldTypes[0],
+            default: fieldTypes[0],
             validator(value) {
-                return this.fieldTypes.includes(value);
+                return fieldTypes.includes(value);
             }
         },
         dataType: {
             type: String,
-            default: this.dataTypes[0],
+            default: dataTypes[0],
             validator(value) {
-                return this.dataTypes.includes(value);
+                return dataTypes.includes(value);
             }
         },
     },
@@ -100,9 +101,7 @@ export default {
     },
     computed: {
         ...mapGetters([
-                'chartTypes',
-                'fieldTypes',
-                'dataTypes',
+                'count',
                 'countries',
                 'summaryByCountry',
                 'countryDataByCountry',
@@ -179,7 +178,7 @@ export default {
             this.refresh();
         },
         fieldTypeClick(i) {
-            this.$_fieldType = this.fieldTypes[i];
+            this.$_fieldType = fieldTypes[i];
             this.fillData();
         },
         dataTypeClick() {
@@ -189,7 +188,7 @@ export default {
             this.refresh();
         },
         isFieldType(i) {
-            let expr = this.fieldTypes[i] == this.$_fieldType;
+            let expr = fieldTypes[i] == this.$_fieldType;
             return {'active': expr, 'animate__animated': expr, 'animate__heartBeat': expr};
         },
         dataTypeMouseover() {

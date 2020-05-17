@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import { chartTypes, fieldTypes, dataTypes } from '../app/common/constants.ts'
 import {PomApiService} from '../app/services/pom.api.service'
 let pomApiService = new PomApiService();
 
@@ -9,19 +8,11 @@ Vue.use(Vuex);
 
 export const store = new Vuex.Store({
     state: {
-        chartTypes: chartTypes,
-        fieldTypes: fieldTypes,
-        dataTypes: dataTypes,
-
         countries: [],
         summary: {},
         countryData: {},
     },
     getters: {
-        chartTypes: state => state.chartTypes,
-        fieldTypes: state => state.fieldTypes,
-        dataTypes: state => state.dataTypes,
-
         count: state => state.count,
         countries: state => state.countries,
         summaryByCountry: state => country => state.summary[country],
