@@ -37,7 +37,6 @@
 
 <script>
 import vSelect from 'vue-select'
-import { chartTypes, fieldTypes, dataTypes } from './common/constants.ts'
 import { chartOptions } from './common/chartOptions.ts'
 import LineChart from './LineChart'
 import BarChart from './BarChart'
@@ -66,23 +65,23 @@ export default {
         },
         chartType: {
             type: String,
-            default: chartTypes[0],
+            default: this.chartTypes[0],
             validator(value) {
-                return chartTypes.includes(value);
+                return this.chartTypes.includes(value);
             }
         },
         fieldType: {
             type: String,
-            default: fieldTypes[0],
+            default: this.fieldTypes[0],
             validator(value) {
-                return fieldTypes.includes(value);
+                return this.fieldTypes.includes(value);
             }
         },
         dataType: {
             type: String,
-            default: dataTypes[0],
+            default: this.dataTypes[0],
             validator(value) {
-                return dataTypes.includes(value);
+                return this.dataTypes.includes(value);
             }
         },
     },
@@ -100,7 +99,9 @@ export default {
     },
     computed: {
         ...mapGetters([
-                'count',
+                'chartTypes',
+                'fieldTypes',
+                'dataTypes',
                 'countries',
                 'summaryByCountry',
                 'countryDataByCountry',
@@ -177,11 +178,11 @@ export default {
             this.refresh();
         },
         fieldTypeClick(i) {
-            this.$_fieldType = fieldTypes[i];
+            this.$_fieldType = this.fieldTypes[i];
             this.fillData();
         },
         dataTypeClick() {
-            this.$_dataType = this.getNextElement(dataTypes, this.$_dataType);
+            this.$_dataType = this.getNextElement(this.dataTypes, this.$_dataType);
             this.dataTypeClassToggler = true;
             setTimeout(() => this.dataTypeClassToggler = false, 1000);
             this.refresh();
@@ -192,7 +193,7 @@ export default {
             return arr[nextIdx];
         },
         isFieldType(i) {
-            let expr = fieldTypes[i] == this.$_fieldType;
+            let expr = this.fieldTypes[i] == this.$_fieldType;
             return {'active': expr, 'animate__animated': expr, 'animate__heartBeat': expr};
         },
         dataTypeMouseover() {

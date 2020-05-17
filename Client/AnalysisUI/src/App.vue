@@ -28,8 +28,8 @@
 </template>
 
 <script>
-import { chartTypes, fieldTypes, dataTypes } from './app/common/constants.ts'
 import ChartWrapper from './app/ChartWrapper'
+import { mapGetters } from 'vuex';
 import { mapActions } from 'vuex';
 
 export default {
@@ -42,28 +42,36 @@ export default {
             isReady: false,
             country: 'US',
             chartTypeId: 0,
-            chartType: chartTypes[0],
+            chartType: null,
             fieldTypeId: 0,
-            fieldType: fieldTypes[0],
+            fieldType: null,
             dataTypeId: 0,
-            dataType: dataTypes[0],
+            dataType: null,
         }
     },
     computed: {
+        ...mapGetters([
+                'chartTypes',
+                'fieldTypes',
+                'dataTypes',
+        ]),
         nextChartType()
         {
-            return this.getNextValue(chartTypes, this.chartTypeId + 1);
+            return this.getNextValue(this.chartTypes, this.chartTypeId + 1);
         },
         nextFieldType()
         {
-            return this.getNextValue(fieldTypes, this.fieldTypeId + 1);
+            return this.getNextValue(this.fieldTypes, this.fieldTypeId + 1);
         },
         nextDataType()
         {
-            return this.getNextValue(dataTypes, this.dataTypeId + 1);
+            return this.getNextValue(this.dataTypes, this.dataTypeId + 1);
         },
     },
     mounted() {
+            this.chartType = this.chartTypes[0];
+            this.fieldType = this.fieldTypes[0];
+            this.dataType = this.dataTypes[0];
             this.initializeComponent();
         },
     methods: {
@@ -71,22 +79,22 @@ export default {
             'getAllCountries',
         ]),
         initializeComponent() {
-            this.getAllCountries(dataTypes[0])
+            this.getAllCountries(this.dataTypes[0])
                 .then(result => {
                     this.isReady = true;
                 });
         },        
         toggleChartType() {
             this.chartTypeId++;
-            this.chartType = this.getNextValue(chartTypes, this.chartTypeId);
+            this.chartType = this.getNextValue(this.chartTypes, this.chartTypeId);
         },
         toggleFieldType() {
             this.fieldTypeId++;
-            this.fieldType = this.getNextValue(fieldTypes, this.fieldTypeId);
+            this.fieldType = this.getNextValue(this.fieldTypes, this.fieldTypeId);
         },
         toggleDataType() {
             this.dataTypeId++;
-            this.dataType = this.getNextValue(dataTypes, this.dataTypeId);
+            this.dataType = this.getNextValue(this.dataTypes, this.dataTypeId);
         },
         getNextValue(arr, idx)
         {
