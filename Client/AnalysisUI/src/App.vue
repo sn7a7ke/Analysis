@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import { getNextElement } from '../src/app/common/functions'
 import ChartWrapper from './app/ChartWrapper'
 import { mapGetters } from 'vuex';
 import { mapActions } from 'vuex';
@@ -41,11 +42,8 @@ export default {
             msg: 'Charts App',
             isReady: false,
             country: 'US',
-            chartTypeId: 0,
             chartType: null,
-            fieldTypeId: 0,
             fieldType: null,
-            dataTypeId: 0,
             dataType: null,
         }
     },
@@ -57,15 +55,15 @@ export default {
         ]),
         nextChartType()
         {
-            return this.getNextValue(this.chartTypes, this.chartTypeId + 1);
+            return getNextElement(this.chartTypes, this.chartType);
         },
         nextFieldType()
         {
-            return this.getNextValue(this.fieldTypes, this.fieldTypeId + 1);
+            return getNextElement(this.fieldTypes, this.fieldType);
         },
         nextDataType()
         {
-            return this.getNextValue(this.dataTypes, this.dataTypeId + 1);
+            return getNextElement(this.dataTypes, this.dataType);
         },
     },
     mounted() {
@@ -85,20 +83,13 @@ export default {
                 });
         },        
         toggleChartType() {
-            this.chartTypeId++;
-            this.chartType = this.getNextValue(this.chartTypes, this.chartTypeId);
+            this.chartType = getNextElement(this.chartTypes, this.chartType);
         },
         toggleFieldType() {
-            this.fieldTypeId++;
-            this.fieldType = this.getNextValue(this.fieldTypes, this.fieldTypeId);
+            this.fieldType = getNextElement(this.fieldTypes, this.fieldType);
         },
         toggleDataType() {
-            this.dataTypeId++;
-            this.dataType = this.getNextValue(this.dataTypes, this.dataTypeId);
-        },
-        getNextValue(arr, idx)
-        {
-            return arr[idx % arr.length];
+            this.dataType = getNextElement(this.dataTypes, this.dataType);
         },
     },
 }

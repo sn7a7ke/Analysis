@@ -37,6 +37,7 @@
 
 <script>
 import vSelect from 'vue-select'
+import { getNextElement } from './common/functions'
 import { chartOptions } from './common/chartOptions.ts'
 import LineChart from './LineChart'
 import BarChart from './BarChart'
@@ -182,15 +183,10 @@ export default {
             this.fillData();
         },
         dataTypeClick() {
-            this.$_dataType = this.getNextElement(this.dataTypes, this.$_dataType);
+            this.$_dataType = getNextElement(this.dataTypes, this.$_dataType);
             this.dataTypeClassToggler = true;
             setTimeout(() => this.dataTypeClassToggler = false, 1000);
             this.refresh();
-        },
-        getNextElement(arr, el) {
-            let idx = arr.findIndex(x => x == el);
-            let nextIdx = (idx + 1) % arr.length;
-            return arr[nextIdx];
         },
         isFieldType(i) {
             let expr = this.fieldTypes[i] == this.$_fieldType;
