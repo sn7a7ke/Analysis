@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import {PomApiService} from '../app/services/pom.api.service'
+import { getKey } from '../app/common/functions'
+import { PomApiService } from '../app/services/pom.api.service'
 let pomApiService = new PomApiService();
 
 Vue.use(Vuex);
@@ -15,18 +16,18 @@ export const store = new Vuex.Store({
     getters: {
         count: state => state.count,
         countries: state => state.countries,
-        summaryByCountry: state => country => state.summary[country],
-        countryDataByCountry: state => country => state.countryData[country],
+        summaryByKey: state => key => state.summary[key],
+        countryDataByKey: state => key => state.countryData[key],
     },    
     mutations: {
         setCountries(state, payLoad) {
             state.countries = payLoad;
         },
         setSummary(state, payLoad) {
-            Vue.set(state.summary, payLoad.country, payLoad.summary);
+            Vue.set(state.summary, payLoad.key, payLoad.summary);
         },
         setCountryData(state, payLoad) {
-            Vue.set(state.countryData, payLoad.country, payLoad.countryData);
+            Vue.set(state.countryData, payLoad.key, payLoad.countryData);
         },
     },
     actions: {
@@ -38,20 +39,24 @@ export const store = new Vuex.Store({
         },
         getSummary(store, payLoad) {
             let country = payLoad.country;
-            if (store.getters.summaryByCountry(country) !== undefined)
-                return;
-            return pomApiService.getSummary(payLoad.dataType, country)
+            let dataType = payLoad.dataType;
+            let key = getKey(country, dataType);
+            if (store.getters.summaryByKey(key) !== undefined)
+                return Promise.resolve("Cached");
+            return pomApiService.getSummary(dataType, country)
                 .then(summary => {
-                    store.commit('setSummary', {summary, country});
+                    store.commit('setSummary', {key, summary});
                 });
         },
         getCountryData(store, payLoad) {
             let country = payLoad.country;
-            if (store.getters.countryDataByCountry(country) !== undefined)
-                return;
-            return pomApiService.getAll(payLoad.dataType, country)
+            let dataType = payLoad.dataType;
+            let key = getKey(country, dataType);
+            if (store.getters.countryDataByKey(key) !== undefined)
+                return Promise.resolve("Cached");
+            return pomApiService.getAll(dataType, country)
                 .then(countryData => {
-                    store.commit('setCountryData', {countryData, country});
+                    store.commit('setCountryData', {key, countryData});
                 });
         },
     },

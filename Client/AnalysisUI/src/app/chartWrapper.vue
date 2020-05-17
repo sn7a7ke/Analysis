@@ -38,7 +38,7 @@
 <script>
 import vSelect from 'vue-select'
 import { chartTypes, fieldTypes, dataTypes } from './common/constants'
-import { getNextElement } from './common/functions'
+import { getNextElement, getKey } from './common/functions'
 import { chartOptions } from './common/chartOptions'
 import LineChart from './LineChart'
 import BarChart from './BarChart'
@@ -101,18 +101,15 @@ export default {
     },
     computed: {
         ...mapGetters([
-                'count',
                 'countries',
-                'summaryByCountry',
-                'countryDataByCountry',
+                'summaryByKey',
+                'countryDataByKey',
         ]),
         summary() {
-            let res = { ...this.summaryByCountry(this.verifiedCountry)};
+            let key = getKey(this.verifiedCountry, this.$_dataType);
+            let res = { ...this.summaryByKey(key)};
             delete res.date;
             return res;
-        },
-        countryData() {
-            return this.countryDataByCountry(this.verifiedCountry);
         },
         dataTypeClass() {
             return {'animate__animated': this.dataTypeClassToggler, 'animate__heartBeat': this.dataTypeClassToggler};
@@ -166,13 +163,19 @@ export default {
                 });
         },
         fillData() {
+            console.log('fillData');
             this.datacollection = {
-                labels: this.countryData.map(d => d.date),
+                labels: this.countryData().map(d => d.date),
                 datasets: [{
                     backgroundColor: '#888899',
-                    data: this.countryData.map(d => d[this.$_fieldType])
+                    data: this.countryData().map(d => d[this.$_fieldType])
                 }]
             }
+        },
+        countryData() {
+            let key = getKey(this.verifiedCountry, this.$_dataType);
+            console.log(key);
+            return this.countryDataByKey(key);
         },
         countryChanged() {
             this.refresh();
