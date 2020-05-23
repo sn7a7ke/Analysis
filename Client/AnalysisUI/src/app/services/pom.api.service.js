@@ -2,7 +2,7 @@ const axios = require('axios');
 
 export class PomApiService {
     constructor() {
-        this.apiBaseUrl = 'https://localhost:44330/';
+        axios.defaults.baseURL = 'https://localhost:44330/';
     }
 
     getRaw() {
@@ -37,7 +37,7 @@ export class PomApiService {
 
     getHttpRequest(url) {
         return axios
-            .get(this.apiBaseUrl + url)
+            .get(url)
             .then(response => {
                 return response.data;
             })
