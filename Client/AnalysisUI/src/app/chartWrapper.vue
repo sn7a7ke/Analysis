@@ -1,13 +1,13 @@
 <template>
-    <div class="chart-wrapper border border-info rounded m-2 p-2" v-if="isReady">
-        <div class="d-flex m-1 align-items-center">
-            <v-select class="country-dropdown p-1" 
+    <div class="chart-wrapper border border-info rounded" v-if="isReady">
+        <div class="d-flex align-items-center m-1">
+            <v-select class="country-dropdown p-0" 
                 :options="countries"
                 :clearable="false"
                 v-model="verifiedCountry" 
                 @input="countryChanged">
             </v-select>
-            <div class="d-flex col p-1 align-items-center">
+            <div class="col d-flex align-items-center p-0">
                 <div class="summary pointer p-1"  :class="dataTypeClass"
                         @mouseover="dataTypeMouseover"
                         @click="dataTypeClick()">
@@ -100,11 +100,11 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-                'countries',
-                'summaryByKey',
-                'countryDataByKey',
-        ]),
+        ...mapGetters('covid', {
+                countries: 'countries',
+                summaryByKey: 'summaryByKey',
+                countryDataByKey: 'countryDataByKey',
+        }),
         summary() {
             let key = getKey(this.verifiedCountry, this.$_dataType);
             let res = { ...this.summaryByKey(key)};
@@ -133,10 +133,10 @@ export default {
     beforeUpdate() {
     },
     methods: {
-        ...mapActions([
-            'getSummary',
-            'getCountryData',
-        ]),        
+        ...mapActions('covid', {
+            getSummary: 'getSummary',
+            getCountryData: 'getCountryData',
+        }),        
         initializeComponent() {
             this.verifyCountry();
             return this.refresh()
@@ -214,7 +214,6 @@ export default {
     cursor: pointer;
 }
 .summary {
-    font-size: large;
     text-align: center;
 }
 .country-dropdown {

@@ -1,8 +1,0 @@
-.wrapper{
-	/* padding: 15px; */
-	min-width: 640px;
-	margin: 0 auto;
-}
-#line-chart, #bar-chart{
-	height: 350px;
-}
