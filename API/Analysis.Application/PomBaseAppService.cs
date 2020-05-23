@@ -37,5 +37,15 @@ namespace Analysis.Application
         {
             return this.pomStorage.GetAllCountries();
         }
+
+        public PomCovidInfo GetDayByCountry(string country, string day)
+        {
+            return this.pomStorage.GetDayByCountry(country, day);
+        }
+
+        public PomCovidInfo GetLastDayByCountry(string country)
+        {
+            return this.pomStorage.GetLastDayByCountry(country);
+        }
     }
 }

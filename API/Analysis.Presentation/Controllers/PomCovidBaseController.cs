@@ -53,5 +53,13 @@ namespace Analysis.Presentation.Controllers
         {
             return this.pomCovidBaseAppService.GetAllCountries();
         }
+
+        [HttpGet]
+        [Route("LastDay/{country}")]
+        public PomCovidInfo GetLastDayByCountry(string country)
+        {
+            return this.pomCovidBaseAppService.GetLastDayByCountry(country);
+        }
+
     }
 }

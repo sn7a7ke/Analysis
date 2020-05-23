@@ -44,6 +44,24 @@ namespace Analysis.Data.Pom
                 return this.countries;
         }
 
+        public PomCovidInfo GetDayByCountry(string country, string day)
+        {
+            PomCovidInfo res = new PomCovidInfo();
+            if (!GetAll().ContainsKey(country))
+                return res;
+            res = GetAll()[country].FirstOrDefault(x => x.Date == day);
+            return res;
+        }
+
+        public PomCovidInfo GetLastDayByCountry(string country)
+        {
+            PomCovidInfo res = new PomCovidInfo();
+            if (!GetAll().ContainsKey(country) || GetAll()[country].Count == 0)
+                return res;
+            res = GetAll()[country][GetAll()[country].Count - 1];
+            return res;
+        }
+
         private Dictionary<string, List<PomCovidInfo>> Parse()
         {
             var json = this.pomRawStorage.Json;

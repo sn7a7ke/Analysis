@@ -83,6 +83,7 @@ namespace Analysis.Presentation
             services.AddScoped<IRawAppService, PomRawAppService>();
             services.AddScoped<PomTotalAppService>();
             services.AddScoped<PomDailyAppService>();
+            services.AddScoped<PomTableAppService>();
         }
     }
 }
