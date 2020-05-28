@@ -8,6 +8,7 @@ namespace Analysis.Presentation.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [ResponseCache(CacheProfileName = "default")]
     public abstract class PomCovidBaseController : ControllerBase
     {
         private readonly PomBaseAppService pomCovidBaseAppService;

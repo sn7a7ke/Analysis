@@ -6,6 +6,7 @@ using Analysis.Infrastructure;
 using Analysis.Infrastructure.Interface;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -15,9 +16,12 @@ namespace Analysis.Presentation
 {
     public class Startup
     {
+        private readonly AppSettings appSettings;
+
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.Configuration = configuration;
+            this.appSettings = Configuration.GetSection(typeof(AppSettings).Name).Get<AppSettings>();
         }
 
         public IConfiguration Configuration { get; }
@@ -27,7 +31,13 @@ namespace Analysis.Presentation
         {
             services.AddCors();
 
-            services.AddControllers();
+            services.AddControllers(options =>
+            {
+                options.CacheProfiles.Add("default", new CacheProfile
+                {
+                    Duration = appSettings.PomCovid.ResponseCacheDuration
+                });
+            });
 
             this.ConfigureModules(services);
 
@@ -61,6 +71,8 @@ namespace Analysis.Presentation
 
             app.UseRouting();
 
+            app.UseResponseCaching();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -71,10 +83,9 @@ namespace Analysis.Presentation
 
         private void ConfigureModules(IServiceCollection services)
         {
-            var appSettings = Configuration.GetSection(typeof(AppSettings).Name).Get<AppSettings>();
-            services.AddSingleton(appSettings);
+            services.AddSingleton(this.appSettings);
 
-            var pomRawStorage = new PomRawStorage(appSettings);
+            var pomRawStorage = new PomRawStorage(this.appSettings);
             services.AddSingleton(pomRawStorage);
             services.AddSingleton<IExternalStorage, PomCovidExternalStorage>();
             services.AddScoped<PomTotalStorage>();
