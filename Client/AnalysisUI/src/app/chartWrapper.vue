@@ -7,9 +7,17 @@
                 v-model="verifiedCountry" 
                 @input="countryChanged">
             </v-select>
+            <div class="p-1" height="28" :class="chartTypeClass"
+                    @mouseover="chartTypeMouseover()"
+                    @click="chartTypeClick()">
+                <img src="../../css/chart-bar.svg" height="28"
+                        v-if="$_chartType=='bar'"/>
+                <img src="../../css/chart-line.svg" height="28"
+                        v-else/>
+            </div>
             <div class="col d-flex align-items-center p-0">
-                <div class="summary pointer p-1"  :class="dataTypeClass"
-                        @mouseover="dataTypeMouseover"
+                <div class="summary pointer p-1" :class="dataTypeClass"
+                        @mouseover="dataTypeMouseover()"
                         @click="dataTypeClick()">
                     {{$_dataType.toUpperCase()}}
                 </div>
@@ -22,12 +30,12 @@
         </div>
         <div class="m-1">
             <line-chart
-                v-if="chartType=='line'"
+                v-if="$_chartType=='line'"
                 :chart-data="datacollection"
                 :options="options">
             </line-chart>
             <bar-chart
-                v-if="chartType=='bar'"
+                v-if="$_chartType=='bar'"
                 :chart-data="datacollection"
                 :options="options">
             </bar-chart>
@@ -93,10 +101,12 @@ export default {
             options: chartOptions,
             isReady: false,
             verifiedCountry: '',
+            $_chartType: '',
             $_fieldType: '',
             $_dataType: '',
             defaultCountry: 'World',
-            dataTypeClassToggler: true
+            chartTypeClassToggler: true,
+            dataTypeClassToggler: true,
         }
     },
     computed: {
@@ -111,11 +121,18 @@ export default {
             delete res.date;
             return res;
         },
+        chartTypeClass() {
+            return {'animate__animated': this.chartTypeClassToggler, 'animate__heartBeat': this.chartTypeClassToggler};
+        },
         dataTypeClass() {
             return {'animate__animated': this.dataTypeClassToggler, 'animate__heartBeat': this.dataTypeClassToggler};
         },
     },
     watch: {
+        chartType() {
+            this.$_chartType = this.chartType
+            this.refresh();
+        },
         fieldType() {
             this.$_fieldType = this.fieldType;
             this.fillData();
@@ -126,6 +143,7 @@ export default {
         },
     },
     mounted() {
+        this.$_chartType = this.chartType;
         this.$_fieldType = this.fieldType;
         this.$_dataType = this.dataType;
         this.initializeComponent();
@@ -178,6 +196,12 @@ export default {
         countryChanged() {
             this.refresh();
         },
+        chartTypeClick() {
+            this.$_chartType = getNextElement(chartTypes, this.$_chartType);
+            this.chartTypeClassToggler = true;
+            setTimeout(() => this.chartTypeClassToggler = false, 800);
+            this.refresh();
+        },
         fieldTypeClick(i) {
             this.$_fieldType = fieldTypes[i];
             this.fillData();
@@ -191,6 +215,9 @@ export default {
         isFieldType(i) {
             let expr = fieldTypes[i] == this.$_fieldType;
             return {'active': expr, 'animate__animated': expr, 'animate__heartBeat': expr};
+        },
+        chartTypeMouseover() {
+            this.chartTypeClassToggler = false;
         },
         dataTypeMouseover() {
             this.dataTypeClassToggler = false;

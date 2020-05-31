@@ -1,13 +1,10 @@
 <template>
     <v-app>
-        <v-navigation-drawer app>
-            <!-- -->
-        </v-navigation-drawer>
         <v-card class="overflow-hidden">
         <v-app-bar
                 absolute
                 color="#6A76AB"
-                dark                
+                dark
                 dense
                 src="https://picsum.photos/1920/1080?random"
                 fade-img-on-scroll
