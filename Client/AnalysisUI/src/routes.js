@@ -3,9 +3,9 @@ import VueRouter from 'vue-router';
 
 Vue.use(VueRouter);
 
-import chartWrapper from './app/chartWrapper';
-import tableWrapper from './app/tableWrapper';
-import underConstruction from './app/underConstruction';
+import ChartWrapper from './app/chartWrapper';
+import TableWrapper from './app/tableWrapper';
+import UnderConstruction from './app/underConstruction';
 import E404 from './app/E404';
 
 import {store} from './store';
@@ -18,12 +18,12 @@ const routes = [
 	{
 		name: 'charts',
 		path: '/charts',
-		component: chartWrapper,
+		component: ChartWrapper,
 	},
 	{
         name: 'tables',
 		path: '/tables',
-		component: underConstruction
+		component: UnderConstruction
 	},
 	{
 		path: '*',

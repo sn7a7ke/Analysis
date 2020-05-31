@@ -70,7 +70,7 @@
 <script>
 import { chartTypes, fieldTypes, dataTypes } from './app/common/constants'
 import { getNextElement } from '../src/app/common/functions'
-import ChartWrapper from './app/ChartWrapper'
+import ChartWrapper from './app/chartWrapper'
 import { mapGetters } from 'vuex';
 import { mapActions } from 'vuex';
 

@@ -40,8 +40,8 @@ import vSelect from 'vue-select'
 import { chartTypes, fieldTypes, dataTypes } from './common/constants'
 import { getNextElement, getKey } from './common/functions'
 import { chartOptions } from './common/chartOptions'
-import LineChart from './LineChart'
-import BarChart from './BarChart'
+import LineChart from './lineChart'
+import BarChart from './barChart'
 import { mapGetters } from 'vuex';
 import { mapActions } from 'vuex';
 
