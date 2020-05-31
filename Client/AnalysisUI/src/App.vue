@@ -1,43 +1,70 @@
 <template>
-    <div>
-        <section>
-			<div class="container p-3">
-				<div class="row">
-					<div class="menu col col-sm-2">
-						<ul class="list-group">
-							<router-link v-for="(item, index) in menu"
-										 :key="index"
-										 :to="item.url"
-										 tag="li"
-										 class="list-group-item"
-										 active-class="active"
-							>
-								<a>{{ item.text }}</a>
-							</router-link>
-						</ul>
-					</div>
-					<div class="main-zone col col-sm-10">
-						<transition name="slide" mode="out-in">
-							<router-view></router-view>
-						</transition>
-					</div>
-				</div>
-                <div class="row">
-                    <div class="wrapper col my-3" v-if="isReady">
-                        <button class="btn btn-primary m-2"
-                            @click="toggleChartType">Switch to <b>{{nextChartType}}</b>
-                        </button>
-                        <button class="btn btn-primary m-2"
-                            @click="toggleFieldType">Switch to <b>{{nextFieldType}}</b>
-                        </button>
-                        <button class="btn btn-primary m-2"
-                            @click="toggleDataType">Switch to <b>{{nextDataType}}</b>
-                        </button>
-                    </div>
-				</div>
-			</div>
-		</section>
-    </div>
+    <v-app>
+        <v-navigation-drawer app>
+            <!-- -->
+        </v-navigation-drawer>
+        <v-card class="overflow-hidden">
+        <v-app-bar
+                absolute
+                color="#6A76AB"
+                dark                
+                dense
+                src="https://picsum.photos/1920/1080?random"
+                fade-img-on-scroll
+                scroll-target="#scrolling-techniques-4"
+                >
+            <template v-slot:img="{ props }">
+                <v-img v-bind="props" gradient="to top right, rgba(100,115,201,.7), rgba(25,32,72,.7)" ></v-img>
+            </template>
+            <v-app-bar-nav-icon></v-app-bar-nav-icon>
+            <v-toolbar-title>Analysis</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn icon>
+                <v-icon>mdi-magnify</v-icon>
+            </v-btn>
+            <v-btn icon>
+                <v-icon>mdi-heart</v-icon>
+            </v-btn>
+            <v-menu bottom left >
+                <template v-slot:activator="{ on }">
+                    <v-btn icon color="grey" v-on="on">
+                        <v-icon>mdi-dots-vertical</v-icon>
+                    </v-btn>
+                </template>
+                <v-list>
+                    <v-list-item v-for="(item, i) in menuItems" :key="i">
+                        <v-list-item-title>{{ item.title }}</v-list-item-title>
+                    </v-list-item>
+                </v-list>
+            </v-menu>
+            <template v-slot:extension>
+                <v-tabs align-with-title>
+                    <router-link v-for="(item, index) in menu"
+                            :key="index"
+                            :to="item.url"
+                            tag="v-tab"
+                            >
+                        {{ item.text }}
+                    </router-link>
+                </v-tabs>
+            </template>
+        </v-app-bar>
+        <v-sheet
+                id="scrolling-techniques-4"
+                class="overflow-y-auto"
+                max-height="800"
+                >
+            <v-container fluid class="a-container">
+                <transition name="slide" mode="out-in">
+                    <router-view v-if="isReady"></router-view>
+                </transition>
+            </v-container>
+        </v-sheet>
+        </v-card>
+        <v-footer app>
+            <!-- -->
+        </v-footer>
+    </v-app>
 </template>
 
 <script>
@@ -59,24 +86,16 @@ export default {
             chartType: chartTypes[0],
             fieldType: fieldTypes[0],
             dataType: dataTypes[0],
+            menuItems: [
+                { title: 'Some text' },
+                { title: 'Some text2' },
+            ],
         }
     },
     computed: {
         ...mapGetters('menu', {
             menu: 'items'
         }),
-        nextChartType()
-        {
-            return getNextElement(chartTypes, this.chartType);
-        },
-        nextFieldType()
-        {
-            return getNextElement(fieldTypes, this.fieldType);
-        },
-        nextDataType()
-        {
-            return getNextElement(dataTypes, this.dataType);
-        },
     },
     mounted() {
             this.initializeComponent();
@@ -91,15 +110,6 @@ export default {
                     this.isReady = true;
                 });
         },        
-        toggleChartType() {
-            this.chartType = getNextElement(chartTypes, this.chartType);
-        },
-        toggleFieldType() {
-            this.fieldType = getNextElement(fieldTypes, this.fieldType);
-        },
-        toggleDataType() {
-            this.dataType = getNextElement(dataTypes, this.dataType);
-        },
     },
 }
 </script>
@@ -112,20 +122,11 @@ export default {
         text-align: center;
         color: #2c3e50;
     }
-    #line-chart, #bar-chart{
-        height: 350px;
-    }
-	.menu{
-		border-right: 1px solid #ddd;
-	}
-	.list-group-item{
-		transition: background 0.3s, color 0.3s;
-	}
-	.list-group-item a{
-		text-decoration: none;
-	}
-	.list-group-item.active a{
-		color: inherit;
+    .a-container {
+        margin-top: 100px;
+        height: 1000px;
+        min-width: 600px;
+        max-width: 1024px;
     }
     
 	.slide-enter{

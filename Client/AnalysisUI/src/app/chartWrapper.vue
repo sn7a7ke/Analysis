@@ -163,7 +163,6 @@ export default {
                 });
         },
         fillData() {
-            console.log('fillData');
             this.datacollection = {
                 labels: this.countryData().map(d => d.date),
                 datasets: [{
@@ -174,7 +173,6 @@ export default {
         },
         countryData() {
             let key = getKey(this.verifiedCountry, this.$_dataType);
-            console.log(key);
             return this.countryDataByKey(key);
         },
         countryChanged() {
