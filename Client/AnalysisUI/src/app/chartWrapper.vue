@@ -53,7 +53,6 @@ import BarChart from './barChart'
 import { mapGetters } from 'vuex';
 import { mapActions } from 'vuex';
 
-
 export default {
     components: {
         vSelect,
@@ -154,7 +153,7 @@ export default {
         ...mapActions('covid', {
             getSummary: 'getSummary',
             getCountryData: 'getCountryData',
-        }),        
+        }),
         initializeComponent() {
             this.verifyCountry();
             return this.refresh()

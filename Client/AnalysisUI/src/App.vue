@@ -121,9 +121,8 @@ export default {
     }
     .a-container {
         margin-top: 100px;
-        height: 1000px;
         min-width: 600px;
-        max-width: 1024px;
+        max-width: 1200px;
     }
     
 	.slide-enter{

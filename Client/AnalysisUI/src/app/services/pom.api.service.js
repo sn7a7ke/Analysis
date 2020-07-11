@@ -35,6 +35,11 @@ export class PomApiService {
         return this.getHttpRequest(url);
     }
 
+    getMainTable() {
+        let url = "PomCovidTable/All";
+        return this.getHttpRequest(url);
+    }
+
     getHttpRequest(url) {
         return axios
             .get(url)

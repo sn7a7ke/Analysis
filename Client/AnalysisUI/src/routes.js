@@ -23,7 +23,7 @@ const routes = [
 	{
         name: 'tables',
 		path: '/tables',
-		component: UnderConstruction
+		component: TableWrapper
 	},
 	{
 		path: '*',
